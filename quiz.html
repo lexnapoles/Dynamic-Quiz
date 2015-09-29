@@ -2,10 +2,39 @@
 <html>
     <head>
         <title>Dynamic Quiz</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto:700,300,400italic' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" type="text/css" href="css/quiz.css">
-        <script type="text/javascript"  defer src="js/quiz.js"></script>
+        <script type="text/javascript" defer src="js/quiz.js"></script>
     </head>
     <body>
+
+    <div class="quiz">
+        <header class="title">
+            <h1>Quiz</h1>
+        </header>
+        <main class="questionnarie">
+            <form class="questionsForm">
+                <div class="question">
+                    <label>What is my name?</label>
+                </div>
+                <div class="answers">
+                    <input type="radio" name="age" value="Alejandro">Alejandro
+                    <input type="radio" name="age" value="Heisenberg">Heisenberg
+                    <input type="radio" name="age" value="Pepe">Pepe
+                </div>
+                <div class="submitBtn">
+                    <button type="submit">Next</button>
+                </div>
+            </form>
+        </main>
+        <aside class="aside marginLeft"></aside>
+        <aside class="aside marginRigth"></aside>
+        <footer class="footer"> </footer>
+    </div>
+
+
+
+
 
     </body>
 </html>
