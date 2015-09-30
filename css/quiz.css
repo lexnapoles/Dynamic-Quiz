@@ -21,34 +21,29 @@
 .title
 {
     font-weight: 400;
-    background: tomato;
     text-align: center;
 }
 
 .footer
 {
-    background: lightgreen;
 }
 
 .questionnarie
 {
-    border: 2px solid black;
-    background: deepskyblue;
+    border: 2px solid lightgrey;
 }
 
 .marginLeft
 {
-    background: gold;
 }
 
 .marginRigth
 {
-    background: pink;
+
 }
 
 .question
 {
-    background: red;
     font-weight: 700;
 }
 
@@ -97,13 +92,10 @@ body
 
 .aside1
 {
-    background: purple;
-
 }
 
 .answers
 {
-    background: greenyellow;
     text-align: center;
 }
 
