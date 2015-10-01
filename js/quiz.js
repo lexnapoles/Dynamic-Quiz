@@ -1,6 +1,7 @@
 var questionDiv  = document.getElementsByClassName("question")[0];
 var choicesDiv = document.getElementsByClassName("choices")[0];
 var questionsForm = document.getElementsByClassName("questionsForm")[0];
+var choicesList = document.getElementsByClassName("choicesList")[0];
 
 var allQuestions = ["What is the capital of Spain?","How many sides has an hexagon?", "What is the biggest creature on Earth?"];
 
@@ -17,7 +18,6 @@ function Question() {
         question = value;
     };
 }
-
 
 function Choices() {
     "use strict";
@@ -52,17 +52,22 @@ var Questionnaire = function() {
 
         for(var i = 0; i < choices.length; i++) {
 
-            var choice = document.createElement("INPUT");
-            choice.type = "radio";
-            choice.name = "choice";
-            location.appendChild(choice);
+            var li = document.createElement("LI");
+            var input = document.createElement("INPUT");
+            input.type = "radio";
+            input.name = "choice";
+
+            li.appendChild(input);
 
             var text = document.createTextNode(choices[i]);
-            location.appendChild(text);
+            li.appendChild(text);
+
+            location.appendChild(li);
         }
     };
 
     var fillQuestion = function(text) {
+
         var label = document.createElement("LABEL");
 
         var questionText = document.createTextNode(text);
@@ -78,14 +83,14 @@ var Questionnaire = function() {
                 choices.setCorrectChoice(correctChoice);
 
                 fillQuestion(question.getQuestion());
-                fillChoices(choicesDiv, choices.getChoices());
+                fillChoices(choicesList, choices.getChoices());
             }
         };
 }();
 
 
 var firstQuestion = allQuestions[0];
-var choices = ["Barcelona", "Sevilla", "Madrid", "Coimbra"];
+var choices = ["Barcelona", "Sevilla", "Madrid", "Coimbra","Sri Lanka"];
 Questionnaire.fillQuestionnaire(firstQuestion, choices, 2);
 
 var nextHandler = function(event) {
