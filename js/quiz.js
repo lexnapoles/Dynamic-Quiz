@@ -1,32 +1,28 @@
 var questionDiv  = document.getElementsByClassName("question")[0];
-var choicesDiv = document.getElementsByClassName("choices")[0];
 var questionsForm = document.getElementsByClassName("questionsForm")[0];
 var choicesList = document.getElementsByClassName("choicesList")[0];
-
-var allQuestions = ["What is the capital of Spain?","How many sides has an hexagon?", "What is the biggest creature on Earth?"];
 
 function Question() {
     "use strict";
 
     var question;
+    var choices;
+    var correctChoice;
 
     this.getQuestion = function () {
         return question;
     };
 
-    this.setQuestion = function(value) {
-        question = value;
-    };
-}
-
-function Choices() {
-    "use strict";
-
-    var choices;
-    var correctChoice;
-
     this.getChoices = function () {
         return choices;
+    };
+
+    this.getCorrectAnswer = function() {
+        return correctChoice;
+    };
+
+    this.setQuestion = function(value) {
+        question = value;
     };
 
     this.setChoices = function(values) {
@@ -37,16 +33,14 @@ function Choices() {
         correctChoice = value;
     };
 
-    this.IsCorrectAnswer = function (choice) {
-        return choice === choices[correctChoice];
+    this.isCorrectChoice = function (choice) {
+        return choice === correctChoice;
     };
 }
 
+
 var Questionnaire = function() {
     "use strict";
-
-    var question = new Question();
-    var choices = new Choices();
 
     var fillChoices = function(location, choices) {
 
@@ -76,30 +70,99 @@ var Questionnaire = function() {
         questionDiv.appendChild(label);
     };
 
-    return {
-        fillQuestionnaire: function(quest, chs, correctChoice) {
-                question.setQuestion(quest);
-                choices.setChoices(chs);
-                choices.setCorrectChoice(correctChoice);
 
-                fillQuestion(question.getQuestion());
-                fillChoices(choicesList, choices.getChoices());
-            }
-        };
+
+    return {
+        fillQuestionnaire: function(question) {
+
+            fillQuestion(question.getQuestion());
+            fillChoices(choicesList, question.getChoices());
+        }
+    };
 }();
 
 
-var firstQuestion = allQuestions[0];
-var choices = ["Barcelona", "Sevilla", "Madrid", "Coimbra","Sri Lanka"];
-Questionnaire.fillQuestionnaire(firstQuestion, choices, 2);
-
-var nextHandler = function(event) {
+var Application = function() {
     "use strict";
 
-    event.preventDefault();
-};
+    var allQuestions = ["What is the capital of Spain?","How many sides has an hexagon?", "What is the biggest creature on Earth?"];
 
-questionsForm.addEventListener("submit", nextHandler, false);
+    var choicesForQuestions = [ ["Barcelona", "Sevilla", "Madrid", "Coimbra","Sri Lanka"],
+                                [2,7, 340, 6, 10],
+                                ["Eagle","Lion", "You", "Doberman", "Blue whale"] ];
+
+    var correctAnswerForQuestions = [2,3,4];
+
+    var question = new Question();
+
+
+    var currentQuestion = 0;
+
+
+
+    var getCurrentQuestion = function() {
+
+        question.setQuestion(allQuestions[currentQuestion]);
+        question.setChoices(choicesForQuestions[currentQuestion]);
+        question.setCorrectChoice(correctAnswerForQuestions[currentQuestion]);
+
+        return question;
+    };
+
+    var getChoiceChecked = function(form) {
+
+        var choices = form.elements;
+
+        for(var i = 0, len = choices.length; i < len; i++) {
+
+            if(choices[i].checked) {
+
+                return i;
+            }
+        }
+        return -1;
+    };
+
+    var showScore = function() {
+
+    };
+
+    var nextQuestionHandler = function(event) {
+
+        event.preventDefault();
+
+        var choiceChecked = getChoiceChecked(questionsForm);
+        if(choiceChecked > 0) {
+
+            currentQuestion++;
+
+            if(currentQuestion < allQuestions.length) {
+
+                if (question.isCorrectChoice(choiceChecked)) {
+                    //Increase score
+                }
+
+                Questionnaire.fillQuestionnaire(getCurrentQuestion());
+            }
+
+            else {
+                //showScore();
+            }
+
+        }
+    };
+
+    return {
+        startQuiz: function () {
+
+            Questionnaire.fillQuestionnaire(getCurrentQuestion());
+
+            questionsForm.addEventListener("submit", nextQuestionHandler, false);
+
+        }
+    };
+}();
+
 
 
 
