@@ -42,7 +42,7 @@ function Question() {
 var Questionnaire = function() {
     "use strict";
 
-    var fillChoices = function(location, choices) {
+    var fillChoices = function(choicesList, choices) {
 
         for(var i = 0; i < choices.length; i++) {
 
@@ -56,7 +56,7 @@ var Questionnaire = function() {
             var text = document.createTextNode(choices[i]);
             li.appendChild(text);
 
-            location.appendChild(li);
+            choicesList.appendChild(li);
         }
     };
 
@@ -70,10 +70,18 @@ var Questionnaire = function() {
         questionDiv.appendChild(label);
     };
 
+    var clearNodeChilds = function(node) {
 
+        while(node.hasChildNodes()) {
+            node.removeChild(node.lastChild);
+        }
+    };
 
     return {
         fillQuestionnaire: function(question) {
+
+            clearNodeChilds(questionDiv);
+            clearNodeChilds(choicesList);
 
             fillQuestion(question.getQuestion());
             fillChoices(choicesList, question.getChoices());
@@ -134,21 +142,17 @@ var Application = function() {
         var choiceChecked = getChoiceChecked(questionsForm);
         if(choiceChecked > 0) {
 
-            currentQuestion++;
-
-            if(currentQuestion < allQuestions.length) {
-
-                if (question.isCorrectChoice(choiceChecked)) {
-                    //Increase score
-                }
-
-                Questionnaire.fillQuestionnaire(getCurrentQuestion());
+            if (question.isCorrectChoice(choiceChecked)) {
+                //Increase score
             }
 
+            currentQuestion++;
+            if(currentQuestion < allQuestions.length) {
+                Questionnaire.fillQuestionnaire(getCurrentQuestion());
+            }
             else {
                 //showScore();
             }
-
         }
     };
 
@@ -158,7 +162,6 @@ var Application = function() {
             Questionnaire.fillQuestionnaire(getCurrentQuestion());
 
             questionsForm.addEventListener("submit", nextQuestionHandler, false);
-
         }
     };
 }();
