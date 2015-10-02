@@ -59,6 +59,8 @@
 
 }
 
+
+
 ul
 {
     display: -webkit-box;
@@ -79,7 +81,16 @@ li
     flex-grow: 1;
 }
 
+.submitBtn
+{
+    text-align: right;
+}
 
+.score
+{
+    font-weight: bold;
+    text-align: center;
+}
 @media all and (min-width: 600px)
 {
     .aside { flex:1 auto;}
@@ -102,9 +113,4 @@ body
 
 
 
-
-.submitBtn
-{
-    text-align: right;
-}
 

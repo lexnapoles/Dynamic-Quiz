@@ -2,6 +2,15 @@ var questionDiv  = document.getElementsByClassName("question")[0];
 var questionsForm = document.getElementsByClassName("questionsForm")[0];
 var choicesList = document.getElementsByClassName("choicesList")[0];
 
+
+var clearNodeChilds = function(node) {
+    "use strict";
+
+    while(node.hasChildNodes()) {
+        node.removeChild(node.lastChild);
+    }
+};
+
 function Question() {
     "use strict";
 
@@ -15,10 +24,6 @@ function Question() {
 
     this.getChoices = function () {
         return choices;
-    };
-
-    this.getCorrectAnswer = function() {
-        return correctChoice;
     };
 
     this.setQuestion = function(value) {
@@ -37,7 +42,6 @@ function Question() {
         return choice === correctChoice;
     };
 }
-
 
 var Questionnaire = function() {
     "use strict";
@@ -70,12 +74,7 @@ var Questionnaire = function() {
         questionDiv.appendChild(label);
     };
 
-    var clearNodeChilds = function(node) {
 
-        while(node.hasChildNodes()) {
-            node.removeChild(node.lastChild);
-        }
-    };
 
     return {
         fillQuestionnaire: function(question) {
@@ -89,11 +88,46 @@ var Questionnaire = function() {
     };
 }();
 
+function Score() {
+    "use strict";
+    var score = 0;
+
+    var changeTitle = function() {
+
+        var title = document.getElementsByClassName("title")[0].firstChild;
+        title.text = "Score";
+    };
+
+
+    this.increaseScore = function() {
+        score++;
+    };
+
+    this.showScore = function() {
+
+        changeTitle();
+
+        questionsForm.onsubmit = null;
+        var main = document.getElementsByClassName("questionnarie")[0];
+        clearNodeChilds(main);
+
+        var scoreMsg = "Your final score is: " + score;
+
+        var h3 = document.createElement("H3");
+        h3.className = "score";
+
+        var text = document.createTextNode(scoreMsg);
+
+        h3.appendChild(text);
+        main.appendChild(h3);
+};
+}
+
 
 var Application = function() {
     "use strict";
 
-    var allQuestions = ["What is the capital of Spain?","How many sides has an hexagon?", "What is the biggest creature on Earth?"];
+    var allQuestions = ["What is the capital of Spain?","How many sides has an hexagon?", "What is the heaviest creature on Earth?"];
 
     var choicesForQuestions = [ ["Barcelona", "Sevilla", "Madrid", "Coimbra","Sri Lanka"],
                                 [2,7, 340, 6, 10],
@@ -103,10 +137,9 @@ var Application = function() {
 
     var question = new Question();
 
+    var score = new Score();
 
     var currentQuestion = 0;
-
-
 
     var getCurrentQuestion = function() {
 
@@ -131,10 +164,6 @@ var Application = function() {
         return -1;
     };
 
-    var showScore = function() {
-
-    };
-
     var nextQuestionHandler = function(event) {
 
         event.preventDefault();
@@ -143,7 +172,7 @@ var Application = function() {
         if(choiceChecked > 0) {
 
             if (question.isCorrectChoice(choiceChecked)) {
-                //Increase score
+               score.increaseScore();
             }
 
             currentQuestion++;
@@ -151,7 +180,8 @@ var Application = function() {
                 Questionnaire.fillQuestionnaire(getCurrentQuestion());
             }
             else {
-                //showScore();
+
+                score.showScore();
             }
         }
     };
@@ -166,6 +196,6 @@ var Application = function() {
     };
 }();
 
-
+Application.startQuiz();
 
 
