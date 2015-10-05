@@ -81,9 +81,18 @@ li
     flex-grow: 1;
 }
 
+.buttons
+{
+    text-align: center;
+}
+
 .submitBtn
 {
-    text-align: right;
+    margin: 1%;
+}
+.backBtn
+{
+    margin: 1%;
 }
 
 .score
