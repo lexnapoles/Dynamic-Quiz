@@ -1,5 +1,5 @@
 var questionDiv  = document.getElementsByClassName("question")[0];
-var questionsForm = document.getElementsByClassName("questionsForm")[0];
+var questionsForm = document.forms[0];
 var choicesList = document.getElementsByClassName("choicesList")[0];
 
 
@@ -84,6 +84,14 @@ var Questionnaire = function() {
 
             fillQuestion(question.getQuestion());
             fillChoices(choicesList, question.getChoices());
+        },
+
+        setUserAnswer: function(answer) {
+
+            if(answer < questionsForm.elements.length)
+            {
+                questionsForm.elements[answer].checked();
+            }
         }
     };
 }();
@@ -134,6 +142,8 @@ var Application = function() {
                                 ["Eagle","Lion", "You", "Doberman", "Blue whale"] ];
 
     var correctAnswerForQuestions = [2,3,4];
+
+    var userAnswers = [];
 
     var question = new Question();
 
