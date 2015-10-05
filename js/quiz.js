@@ -112,8 +112,8 @@ function Score() {
     };
 
     this.decreaseScore = function() {
-        score--;
-    }
+            score--;
+    };
 
     this.showScore = function() {
 
@@ -179,7 +179,12 @@ var Application = function() {
     };
 
     var saveUserAnswer = function(answer) {
-        userAnswers[userAnswers.length] = answer;
+        if(userAnswers.length > 0) {
+            userAnswers[currentQuestion] = answer;
+        }
+        else {
+            userAnswers[userAnswers.length] = answer;
+        }
     };
 
     var getCurrentUserAnswer = function() {
@@ -206,6 +211,7 @@ var Application = function() {
             currentQuestion++;
             if (currentQuestion < allQuestions.length) {
                 Questionnaire.fillQuestionnaire(getCurrentQuestion());
+                Questionnaire.setUserAnswer(getCurrentUserAnswer());
             }
             else {
                 score.showScore();
