@@ -90,7 +90,7 @@ var Questionnaire = function() {
 
             if(answer < questionsForm.elements.length)
             {
-                questionsForm.elements[answer].checked();
+                questionsForm.elements[answer].checked = true;
             }
         }
     };
@@ -110,6 +110,10 @@ function Score() {
     this.increaseScore = function() {
         score++;
     };
+
+    this.decreaseScore = function() {
+        score--;
+    }
 
     this.showScore = function() {
 
@@ -174,24 +178,62 @@ var Application = function() {
         return -1;
     };
 
+    var saveUserAnswer = function(answer) {
+        userAnswers[userAnswers.length] = answer;
+    };
+
+    var getCurrentUserAnswer = function() {
+        return userAnswers[currentQuestion];
+    };
+
     var nextQuestionHandler = function(event) {
 
+        var target = event.target;
+
+        event.stopPropagation();
         event.preventDefault();
 
         var choiceChecked = getChoiceChecked(questionsForm);
-        if(choiceChecked > 0) {
+
+        if (choiceChecked >= 0) {
+
+            saveUserAnswer(choiceChecked);
 
             if (question.isCorrectChoice(choiceChecked)) {
-               score.increaseScore();
+                score.increaseScore();
             }
 
             currentQuestion++;
-            if(currentQuestion < allQuestions.length) {
+            if (currentQuestion < allQuestions.length) {
                 Questionnaire.fillQuestionnaire(getCurrentQuestion());
             }
             else {
-
                 score.showScore();
+            }
+        }
+        else {
+            window.alert("To proceed further, please pick a choice");
+        }
+    };
+
+    var previousQuestionHandler = function(event) {
+
+        var target = event.target;
+
+        if(target.className === "backBtn") {
+
+            event.stopPropagation();
+
+            if (currentQuestion > 0) {
+
+                currentQuestion--;
+                Questionnaire.fillQuestionnaire(getCurrentQuestion());
+                Questionnaire.setUserAnswer(getCurrentUserAnswer());
+
+                score.decreaseScore();
+            }
+            else {
+                window.alert("This is the first question");
             }
         }
     };
@@ -201,7 +243,9 @@ var Application = function() {
 
             Questionnaire.fillQuestionnaire(getCurrentQuestion());
 
+            questionsForm.addEventListener("click", previousQuestionHandler, false);
             questionsForm.addEventListener("submit", nextQuestionHandler, false);
+
         }
     };
 }();
