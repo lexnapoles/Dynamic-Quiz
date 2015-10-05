@@ -112,7 +112,9 @@ function Score() {
     };
 
     this.decreaseScore = function() {
+        if(score > 0) {
             score--;
+        }
     };
 
     this.showScore = function() {
