@@ -59,7 +59,6 @@ var Questionnaire = function() {
 
             var text = document.createTextNode(choices[i]);
             li.appendChild(text);
-
             choicesList.appendChild(li);
         }
     };
@@ -70,6 +69,7 @@ var Questionnaire = function() {
 
         var questionText = document.createTextNode(text);
         label.appendChild(questionText);
+
 
         questionDiv.appendChild(label);
     };
@@ -195,9 +195,6 @@ var Application = function() {
 
     var nextQuestionHandler = function(event) {
 
-        var target = event.target;
-
-        event.stopPropagation();
         event.preventDefault();
 
         var choiceChecked = getChoiceChecked(questionsForm);
@@ -212,8 +209,14 @@ var Application = function() {
 
             currentQuestion++;
             if (currentQuestion < allQuestions.length) {
-                Questionnaire.fillQuestionnaire(getCurrentQuestion());
-                Questionnaire.setUserAnswer(getCurrentUserAnswer());
+
+                $(".QA").fadeTo("fast", 0, function () {
+
+                    Questionnaire.fillQuestionnaire(getCurrentQuestion());
+                    Questionnaire.setUserAnswer(getCurrentUserAnswer());
+                });
+
+                $(".QA").fadeTo("fast", 1);
             }
             else {
                 score.showScore();
@@ -230,13 +233,17 @@ var Application = function() {
 
         if(target.className === "backBtn") {
 
-            event.stopPropagation();
-
             if (currentQuestion > 0) {
 
                 currentQuestion--;
-                Questionnaire.fillQuestionnaire(getCurrentQuestion());
-                Questionnaire.setUserAnswer(getCurrentUserAnswer());
+
+                $(".QA").fadeTo("fast", 0, function () {
+
+                    Questionnaire.fillQuestionnaire(getCurrentQuestion());
+                    Questionnaire.setUserAnswer(getCurrentUserAnswer());
+                });
+
+                $(".QA").fadeTo("fast", 1);
 
                 score.decreaseScore();
             }
