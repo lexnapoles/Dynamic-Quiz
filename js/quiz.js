@@ -137,17 +137,46 @@ function Score() {
 };
 }
 
+function QuestionsAndAnswers(jsonFile) {
+    "use strict";
+
+    var questions = [];
+
+    var currentQuestion = 0;
+
+    this.nextQuestion = function(){
+
+        var question;
+
+        if(currentQuestion !== 0) {
+            currentQuestion++;
+            question = questions[currentQuestion];
+
+        }
+        else {
+            question = questions[currentQuestion];
+            currentQuestion++;
+        }
+
+        return question;
+    };
+
+    this.previousQuestion = function() {
+        currentQuestion--;
+        return questions[currentQuestion];
+    };
+
+    this.noMoreQuestions = function() {
+        return currentQuestion >= questions.length;
+    };
+}
+
+
 
 var Application = function() {
     "use strict";
 
-    var allQuestions = ["What is the capital of Spain?","How many sides has an hexagon?", "What is the heaviest creature on Earth?"];
-
-    var choicesForQuestions = [ ["Barcelona", "Sevilla", "Madrid", "Coimbra","Sri Lanka"],
-                                [2,7, 340, 6, 10],
-                                ["Eagle","Lion", "You", "Doberman", "Blue whale"] ];
-
-    var correctAnswerForQuestions = [2,3,4];
+    var allQuestions = new QuestionsAndAnswers("Q&A.json");
 
     var userAnswers = [];
 
@@ -156,15 +185,6 @@ var Application = function() {
     var score = new Score();
 
     var currentQuestion = 0;
-
-    var getCurrentQuestion = function() {
-
-        question.setQuestion(allQuestions[currentQuestion]);
-        question.setChoices(choicesForQuestions[currentQuestion]);
-        question.setCorrectChoice(correctAnswerForQuestions[currentQuestion]);
-
-        return question;
-    };
 
     var getChoiceChecked = function(form) {
 
@@ -193,11 +213,16 @@ var Application = function() {
         return userAnswers[currentQuestion];
     };
 
-    var fillQuestionnaire = function() {
+    var nextQuestion = function() {
 
-        Questionnaire.fillQuestionnaire(getCurrentQuestion());
+        Questionnaire.fillQuestionnaire(allQuestions.nextQuestion());
         Questionnaire.setUserAnswer(getCurrentUserAnswer());
-    }
+    };
+
+    var previousQuestion = function() {
+        Questionnaire.fillQuestionnaire(allQuestions.previousQuestion());
+        Questionnaire.setUserAnswer(getCurrentUserAnswer());
+    };
 
     var nextQuestionHandler = function(event) {
 
@@ -216,10 +241,7 @@ var Application = function() {
             currentQuestion++;
             if (currentQuestion < allQuestions.length) {
 
-                $(".QA").fadeTo("fast", 0, function () {
-
-                    fillQuestionnaire();
-                });
+                $(".QA").fadeTo("fast", 0,  nextQuestion);
 
                 $(".QA").fadeTo("fast", 1);
             }
@@ -243,8 +265,7 @@ var Application = function() {
                 currentQuestion--;
 
                 $(".QA").fadeTo("fast", 0, function () {
-
-                    fillQuestionnaire();
+                    previousQuestion();
                 });
 
                 $(".QA").fadeTo("fast", 1);
@@ -260,7 +281,7 @@ var Application = function() {
     return {
         startQuiz: function () {
 
-            Questionnaire.fillQuestionnaire(getCurrentQuestion());
+            nextQuestion();
 
             questionsForm.addEventListener("click", previousQuestionHandler, false);
             questionsForm.addEventListener("submit", nextQuestionHandler, false);
