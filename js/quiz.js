@@ -193,6 +193,12 @@ var Application = function() {
         return userAnswers[currentQuestion];
     };
 
+    var fillQuestionnaire = function() {
+
+        Questionnaire.fillQuestionnaire(getCurrentQuestion());
+        Questionnaire.setUserAnswer(getCurrentUserAnswer());
+    }
+
     var nextQuestionHandler = function(event) {
 
         event.preventDefault();
@@ -212,8 +218,7 @@ var Application = function() {
 
                 $(".QA").fadeTo("fast", 0, function () {
 
-                    Questionnaire.fillQuestionnaire(getCurrentQuestion());
-                    Questionnaire.setUserAnswer(getCurrentUserAnswer());
+                    fillQuestionnaire();
                 });
 
                 $(".QA").fadeTo("fast", 1);
@@ -239,8 +244,7 @@ var Application = function() {
 
                 $(".QA").fadeTo("fast", 0, function () {
 
-                    Questionnaire.fillQuestionnaire(getCurrentQuestion());
-                    Questionnaire.setUserAnswer(getCurrentUserAnswer());
+                    fillQuestionnaire();
                 });
 
                 $(".QA").fadeTo("fast", 1);
