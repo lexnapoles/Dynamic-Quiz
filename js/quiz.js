@@ -16,13 +16,13 @@ function Question(obj) {
 
     var question;
     var choices;
-    var correctChoice;
+    var correctAnswer;
 
     if(obj !== null) {
 
         question = obj.question;
         choices = obj.choices;
-        correctChoice = obj.correctChoice;
+        correctAnswer = obj.correctAnswer;
     }
 
     this.getQuestion = function () {
@@ -34,7 +34,7 @@ function Question(obj) {
     };
 
     this.isCorrectChoice = function(choice) {
-        return choice === correctChoice;
+        return choice === correctAnswer;
     };
 }
 
@@ -64,7 +64,6 @@ var Questionnaire = function() {
 
         var questionText = document.createTextNode(text);
         label.appendChild(questionText);
-
 
         questionDiv.appendChild(label);
     };
@@ -133,39 +132,32 @@ function Score() {
 function QuestionsAndAnswers(jsonFile) {
     "use strict";
 
-    var data = JSON.parse(jsonFile);
     var questions = [];
+    var currentQuestion = -1;
 
-    for(var i = 0; i < data.length; i++) {
-        questions[questions.length] = new Question(data[i]);
-    }
+    this.loadQuestions = function() {
 
-    var currentQuestion = 0;
+      return $.getJSON(jsonFile, function(data) {
+
+          $.each(data, function (i) {
+              questions[questions.length] = new Question(data[i]);
+           });
+        });
+    }();
 
     this.next = function(){
-
-        var question;
-
-        if(currentQuestion !== 0) {
-            currentQuestion++;
-            question = questions[currentQuestion];
-
-        }
-        else {
-            question = questions[currentQuestion];
-            currentQuestion++;
-        }
-
-        return question;
+        currentQuestion++;
+        return questions[currentQuestion];
     };
 
     this.previous = function() {
         currentQuestion--;
         return questions[currentQuestion];
+
     };
 
     this.noMoreQuestions = function() {
-        return currentQuestion >= questions.length;
+        return currentQuestion >= questions.length - 1;
     };
 
     this.index = function() {
@@ -187,8 +179,6 @@ var Application = function() {
     var questions = new QuestionsAndAnswers("Q&A.json");
 
     var userAnswers = [];
-
-    var question = new Question();
 
     var score = new Score();
 
@@ -278,9 +268,7 @@ var Application = function() {
 
                 var QA = $(".QA");
 
-                QA.fadeTo("fast", 0, function () {
-                    previousQuestion();
-                });
+                QA.fadeTo("fast", 0, previousQuestion);
 
                 QA.fadeTo("fast", 1);
 
@@ -295,11 +283,13 @@ var Application = function() {
     return {
         startQuiz: function () {
 
-            nextQuestion();
+            questions.loadQuestions.done( function() {
 
-            questionsForm.addEventListener("click", previousQuestionHandler, false);
-            questionsForm.addEventListener("submit", nextQuestionHandler, false);
+                nextQuestion();
 
+                questionsForm.addEventListener("click", previousQuestionHandler, false);
+                questionsForm.addEventListener("submit", nextQuestionHandler, false);
+            });
         }
     };
 }();
