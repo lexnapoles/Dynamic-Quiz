@@ -11,12 +11,19 @@ var clearNodeChilds = function(node) {
     }
 };
 
-function Question() {
+function Question(obj) {
     "use strict";
 
     var question;
     var choices;
     var correctChoice;
+
+    if(obj !== null) {
+
+        question = obj.question;
+        choices = obj.choices;
+        correctChoice = obj.correctChoice;
+    }
 
     this.getQuestion = function () {
         return question;
@@ -26,19 +33,7 @@ function Question() {
         return choices;
     };
 
-    this.setQuestion = function(value) {
-        question = value;
-    };
-
-    this.setChoices = function(values) {
-        choices = values;
-    };
-
-    this.setCorrectChoice = function(value) {
-        correctChoice = value;
-    };
-
-    this.isCorrectChoice = function (choice) {
+    this.isCorrectChoice = function(choice) {
         return choice === correctChoice;
     };
 }
@@ -74,16 +69,14 @@ var Questionnaire = function() {
         questionDiv.appendChild(label);
     };
 
-
-
     return {
-        fillQuestionnaire: function(question) {
+                fillQuestionnaire: function(question) {
 
-            clearNodeChilds(questionDiv);
-            clearNodeChilds(choicesList);
+                    clearNodeChilds(questionDiv);
+                    clearNodeChilds(choicesList);
 
-            fillQuestion(question.getQuestion());
-            fillChoices(choicesList, question.getChoices());
+                    fillQuestion(question.getQuestion());
+                    fillChoices(choicesList, question.getChoices());
         },
 
         setUserAnswer: function(answer) {
@@ -140,11 +133,16 @@ function Score() {
 function QuestionsAndAnswers(jsonFile) {
     "use strict";
 
+    var data = JSON.parse(jsonFile);
     var questions = [];
+
+    for(var i = 0; i < data.length; i++) {
+        questions[questions.length] = new Question(data[i]);
+    }
 
     var currentQuestion = 0;
 
-    this.nextQuestion = function(){
+    this.next = function(){
 
         var question;
 
@@ -161,7 +159,7 @@ function QuestionsAndAnswers(jsonFile) {
         return question;
     };
 
-    this.previousQuestion = function() {
+    this.previous = function() {
         currentQuestion--;
         return questions[currentQuestion];
     };
@@ -169,22 +167,30 @@ function QuestionsAndAnswers(jsonFile) {
     this.noMoreQuestions = function() {
         return currentQuestion >= questions.length;
     };
+
+    this.index = function() {
+        return currentQuestion;
+    };
+
+    this.isFirstQuestion = function() {
+        return currentQuestion === 0;
+    };
+
+    this.isCorrectChoice = function(choice) {
+        return questions[currentQuestion].isCorrectChoice(choice);
+    };
 }
-
-
 
 var Application = function() {
     "use strict";
 
-    var allQuestions = new QuestionsAndAnswers("Q&A.json");
+    var questions = new QuestionsAndAnswers("Q&A.json");
 
     var userAnswers = [];
 
     var question = new Question();
 
     var score = new Score();
-
-    var currentQuestion = 0;
 
     var getChoiceChecked = function(form) {
 
@@ -200,28 +206,35 @@ var Application = function() {
         return -1;
     };
 
+    var userPreviouslyAnswered = function() {
+        return questions.index() < userAnswers.length;
+    };
+
     var saveUserAnswer = function(answer) {
-        if(userAnswers.length > 0) {
-            userAnswers[currentQuestion] = answer;
+        if(userPreviouslyAnswered()) {
+            userAnswers[questions.index()] = answer;
         }
         else {
             userAnswers[userAnswers.length] = answer;
         }
     };
-
-    var getCurrentUserAnswer = function() {
-        return userAnswers[currentQuestion];
+    var getUserAnswer = function() {
+        return userAnswers[questions.index()];
     };
+
 
     var nextQuestion = function() {
 
-        Questionnaire.fillQuestionnaire(allQuestions.nextQuestion());
-        Questionnaire.setUserAnswer(getCurrentUserAnswer());
+        Questionnaire.fillQuestionnaire(questions.next());
+
+        if(userPreviouslyAnswered()) {
+            Questionnaire.setUserAnswer(getUserAnswer());
+        }
     };
 
     var previousQuestion = function() {
-        Questionnaire.fillQuestionnaire(allQuestions.previousQuestion());
-        Questionnaire.setUserAnswer(getCurrentUserAnswer());
+        Questionnaire.fillQuestionnaire(questions.previous());
+        Questionnaire.setUserAnswer(getUserAnswer());
     };
 
     var nextQuestionHandler = function(event) {
@@ -234,16 +247,17 @@ var Application = function() {
 
             saveUserAnswer(choiceChecked);
 
-            if (question.isCorrectChoice(choiceChecked)) {
+            if (questions.isCorrectChoice(choiceChecked)) {
                 score.increaseScore();
             }
 
-            currentQuestion++;
-            if (currentQuestion < allQuestions.length) {
+            if (!questions.noMoreQuestions()) {
 
-                $(".QA").fadeTo("fast", 0,  nextQuestion);
+                var QA = $(".QA");
 
-                $(".QA").fadeTo("fast", 1);
+                QA.fadeTo("fast", 0,  nextQuestion);
+
+                QA.fadeTo("fast", 1);
             }
             else {
                 score.showScore();
@@ -260,15 +274,15 @@ var Application = function() {
 
         if(target.className === "backBtn") {
 
-            if (currentQuestion > 0) {
+            if (!questions.isFirstQuestion()) {
 
-                currentQuestion--;
+                var QA = $(".QA");
 
-                $(".QA").fadeTo("fast", 0, function () {
+                QA.fadeTo("fast", 0, function () {
                     previousQuestion();
                 });
 
-                $(".QA").fadeTo("fast", 1);
+                QA.fadeTo("fast", 1);
 
                 score.decreaseScore();
             }
