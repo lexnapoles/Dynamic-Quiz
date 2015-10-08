@@ -1,5 +1,5 @@
 var questionDiv  = document.getElementsByClassName("question")[0];
-var questionsForm = document.forms[0];
+var questionsForm = document.getElementsByClassName("questionsForm")[0];
 var choicesList = document.getElementsByClassName("choicesList")[0];
 
 
