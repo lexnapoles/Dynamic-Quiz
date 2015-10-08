@@ -11,12 +11,19 @@ var clearNodeChilds = function(node) {
     }
 };
 
-function Question() {
+function Question(obj) {
     "use strict";
 
     var question;
     var choices;
-    var correctChoice;
+    var correctAnswer;
+
+    if(obj !== null) {
+
+        question = obj.question;
+        choices = obj.choices;
+        correctAnswer = obj.correctAnswer;
+    }
 
     this.getQuestion = function () {
         return question;
@@ -26,20 +33,8 @@ function Question() {
         return choices;
     };
 
-    this.setQuestion = function(value) {
-        question = value;
-    };
-
-    this.setChoices = function(values) {
-        choices = values;
-    };
-
-    this.setCorrectChoice = function(value) {
-        correctChoice = value;
-    };
-
-    this.isCorrectChoice = function (choice) {
-        return choice === correctChoice;
+    this.isCorrectChoice = function(choice) {
+        return choice === correctAnswer;
     };
 }
 
@@ -70,20 +65,17 @@ var Questionnaire = function() {
         var questionText = document.createTextNode(text);
         label.appendChild(questionText);
 
-
         questionDiv.appendChild(label);
     };
 
-
-
     return {
-        fillQuestionnaire: function(question) {
+                fillQuestionnaire: function(question) {
 
-            clearNodeChilds(questionDiv);
-            clearNodeChilds(choicesList);
+                    clearNodeChilds(questionDiv);
+                    clearNodeChilds(choicesList);
 
-            fillQuestion(question.getQuestion());
-            fillChoices(choicesList, question.getChoices());
+                    fillQuestion(question.getQuestion());
+                    fillChoices(choicesList, question.getChoices());
         },
 
         setUserAnswer: function(answer) {
@@ -137,34 +129,58 @@ function Score() {
 };
 }
 
+function QuestionsAndAnswers(jsonFile) {
+    "use strict";
+
+    var questions = [];
+    var currentQuestion = -1;
+
+    this.loadQuestions = function() {
+
+      return $.getJSON(jsonFile, function(data) {
+
+          $.each(data, function (i) {
+              questions[questions.length] = new Question(data[i]);
+           });
+        });
+    }();
+
+    this.next = function(){
+        currentQuestion++;
+        return questions[currentQuestion];
+    };
+
+    this.previous = function() {
+        currentQuestion--;
+        return questions[currentQuestion];
+
+    };
+
+    this.noMoreQuestions = function() {
+        return currentQuestion >= questions.length - 1;
+    };
+
+    this.index = function() {
+        return currentQuestion;
+    };
+
+    this.isFirstQuestion = function() {
+        return currentQuestion === 0;
+    };
+
+    this.isCorrectChoice = function(choice) {
+        return questions[currentQuestion].isCorrectChoice(choice);
+    };
+}
 
 var Application = function() {
     "use strict";
 
-    var allQuestions = ["What is the capital of Spain?","How many sides has an hexagon?", "What is the heaviest creature on Earth?"];
-
-    var choicesForQuestions = [ ["Barcelona", "Sevilla", "Madrid", "Coimbra","Sri Lanka"],
-                                [2,7, 340, 6, 10],
-                                ["Eagle","Lion", "You", "Doberman", "Blue whale"] ];
-
-    var correctAnswerForQuestions = [2,3,4];
+    var questions = new QuestionsAndAnswers("Q&A.json");
 
     var userAnswers = [];
 
-    var question = new Question();
-
     var score = new Score();
-
-    var currentQuestion = 0;
-
-    var getCurrentQuestion = function() {
-
-        question.setQuestion(allQuestions[currentQuestion]);
-        question.setChoices(choicesForQuestions[currentQuestion]);
-        question.setCorrectChoice(correctAnswerForQuestions[currentQuestion]);
-
-        return question;
-    };
 
     var getChoiceChecked = function(form) {
 
@@ -180,24 +196,36 @@ var Application = function() {
         return -1;
     };
 
+    var userPreviouslyAnswered = function() {
+        return questions.index() < userAnswers.length;
+    };
+
     var saveUserAnswer = function(answer) {
-        if(userAnswers.length > 0) {
-            userAnswers[currentQuestion] = answer;
+        if(userPreviouslyAnswered()) {
+            userAnswers[questions.index()] = answer;
         }
         else {
             userAnswers[userAnswers.length] = answer;
         }
     };
-
-    var getCurrentUserAnswer = function() {
-        return userAnswers[currentQuestion];
+    var getUserAnswer = function() {
+        return userAnswers[questions.index()];
     };
 
-    var fillQuestionnaire = function() {
 
-        Questionnaire.fillQuestionnaire(getCurrentQuestion());
-        Questionnaire.setUserAnswer(getCurrentUserAnswer());
-    }
+    var nextQuestion = function() {
+
+        Questionnaire.fillQuestionnaire(questions.next());
+
+        if(userPreviouslyAnswered()) {
+            Questionnaire.setUserAnswer(getUserAnswer());
+        }
+    };
+
+    var previousQuestion = function() {
+        Questionnaire.fillQuestionnaire(questions.previous());
+        Questionnaire.setUserAnswer(getUserAnswer());
+    };
 
     var nextQuestionHandler = function(event) {
 
@@ -209,19 +237,17 @@ var Application = function() {
 
             saveUserAnswer(choiceChecked);
 
-            if (question.isCorrectChoice(choiceChecked)) {
+            if (questions.isCorrectChoice(choiceChecked)) {
                 score.increaseScore();
             }
 
-            currentQuestion++;
-            if (currentQuestion < allQuestions.length) {
+            if (!questions.noMoreQuestions()) {
 
-                $(".QA").fadeTo("fast", 0, function () {
+                var QA = $(".QA");
 
-                    fillQuestionnaire();
-                });
+                QA.fadeTo("fast", 0,  nextQuestion);
 
-                $(".QA").fadeTo("fast", 1);
+                QA.fadeTo("fast", 1);
             }
             else {
                 score.showScore();
@@ -238,16 +264,13 @@ var Application = function() {
 
         if(target.className === "backBtn") {
 
-            if (currentQuestion > 0) {
+            if (!questions.isFirstQuestion()) {
 
-                currentQuestion--;
+                var QA = $(".QA");
 
-                $(".QA").fadeTo("fast", 0, function () {
+                QA.fadeTo("fast", 0, previousQuestion);
 
-                    fillQuestionnaire();
-                });
-
-                $(".QA").fadeTo("fast", 1);
+                QA.fadeTo("fast", 1);
 
                 score.decreaseScore();
             }
@@ -260,11 +283,13 @@ var Application = function() {
     return {
         startQuiz: function () {
 
-            Questionnaire.fillQuestionnaire(getCurrentQuestion());
+            questions.loadQuestions.done( function() {
 
-            questionsForm.addEventListener("click", previousQuestionHandler, false);
-            questionsForm.addEventListener("submit", nextQuestionHandler, false);
+                nextQuestion();
 
+                questionsForm.addEventListener("click", previousQuestionHandler, false);
+                questionsForm.addEventListener("submit", nextQuestionHandler, false);
+            });
         }
     };
 }();

@@ -1,0 +1,19 @@
+[
+	{
+		"question": "What is the capital of Spain?",
+		"choices": ["Barcelona", "Sevilla", "Madrid", "Coimbra","Sri Lanka"],
+		"correctAnswer": 2		
+	},
+	
+	{
+		"question": "How many sides has an hexagon?",
+		"choices": [2,7, 340, 6, 10],
+		"correctAnswer": 3
+	},
+	
+	{
+		"question": "What is the heaviest creature on Earth?",
+		"choices": ["Eagle","Lion", "You", "Doberman", "Blue whale"],
+		"correctAnswer": 4
+	}
+]
