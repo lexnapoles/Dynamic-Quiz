@@ -1,7 +1,7 @@
+var loginForm = document.getElementsByClassName("loginForm")[0];
 var questionDiv  = document.getElementsByClassName("question")[0];
 var questionsForm = document.getElementsByClassName("questionsForm")[0];
 var choicesList = document.getElementsByClassName("choicesList")[0];
-
 
 var clearNodeChilds = function(node) {
     "use strict";
@@ -208,10 +208,10 @@ var Application = function() {
             userAnswers[userAnswers.length] = answer;
         }
     };
+
     var getUserAnswer = function() {
         return userAnswers[questions.index()];
     };
-
 
     var nextQuestion = function() {
 
@@ -280,6 +280,35 @@ var Application = function() {
         }
     };
 
+    var loginHandler = function(event) {
+
+    };
+
+    var defaultValueOff = function (event) {
+
+        var target = event.target;
+
+        if (target.className === "username" || target.className === "password") {
+            target.value = "";
+        }
+    };
+
+    var defaultValueOnIfNoValue = function (event) {
+
+        var target = event.target;
+
+        if(target.value === "") {
+
+            if (target.className === "username") {
+                target.value = "username";
+            }
+            else if (target.className === "password") {
+                target.value = "password";
+            }
+        }
+    };
+
+
     return {
         startQuiz: function () {
 
@@ -289,6 +318,10 @@ var Application = function() {
 
                 questionsForm.addEventListener("click", previousQuestionHandler, false);
                 questionsForm.addEventListener("submit", nextQuestionHandler, false);
+
+                loginForm.addEventListener("submit", loginHandler, false);
+                loginForm.addEventListener("click",defaultValueOff, false);
+                loginForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
             });
         }
     };
