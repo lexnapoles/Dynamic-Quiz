@@ -69,13 +69,13 @@ var Questionnaire = function() {
     };
 
     return {
-                fillQuestionnaire: function(question) {
+        fillQuestionnaire: function(question) {
 
-                    clearNodeChilds(questionDiv);
-                    clearNodeChilds(choicesList);
+            clearNodeChilds(questionDiv);
+            clearNodeChilds(choicesList);
 
-                    fillQuestion(question.getQuestion());
-                    fillChoices(choicesList, question.getChoices());
+            fillQuestion(question.getQuestion());
+            fillChoices(choicesList, question.getChoices());
         },
 
         setUserAnswer: function(answer) {
@@ -172,6 +172,37 @@ function QuestionsAndAnswers(jsonFile) {
         return questions[currentQuestion].isCorrectChoice(choice);
     };
 }
+
+var Log = function() {
+    "use strict";
+
+    var logged = false;
+
+    return {
+
+        logIn: function(username, password) {
+
+            var  passwd = localStorage.getItem(username);
+
+            if (passwd === null) {
+                localStorage.setItem(username, password);
+                logged = true;
+            }
+            else if (passwd === password) {
+                logged = true;
+            }
+        },
+
+        logOut: function() {
+            logged = false;
+        },
+
+        isUserLoggedIn: function() {
+            return logged;
+        }
+    };
+}();
+
 
 var Application = function() {
     "use strict";
@@ -280,10 +311,6 @@ var Application = function() {
         }
     };
 
-    var loginHandler = function(event) {
-
-    };
-
     var defaultValueOff = function (event) {
 
         var target = event.target;
@@ -308,6 +335,30 @@ var Application = function() {
         }
     };
 
+    function getUsernameAndPassword() {
+
+        var info = [];
+        var elements = loginForm.elements;
+
+        for (var i = 0, len = elements.length; i < len; i++) {
+            info[info.length] = elements[i].value;
+        }
+        return info;
+    }
+
+    var logInHandler = function(event) {
+
+        event.preventDefault();
+
+        window.alert("login");
+
+        if (!Log.isUserLoggedIn()) {
+            Log.logIn.apply(this, getUsernameAndPassword());
+            window.alert(getUsernameAndPassword().length);
+            window.alert(getUsernameAndPassword()[0], getUsernameAndPassword()[1]);
+        }
+
+    };
 
     return {
         startQuiz: function () {
@@ -319,7 +370,7 @@ var Application = function() {
                 questionsForm.addEventListener("click", previousQuestionHandler, false);
                 questionsForm.addEventListener("submit", nextQuestionHandler, false);
 
-                loginForm.addEventListener("submit", loginHandler, false);
+                loginForm.addEventListener("submit", logInHandler, false);
                 loginForm.addEventListener("click",defaultValueOff, false);
                 loginForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
             });
