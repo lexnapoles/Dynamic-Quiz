@@ -33,9 +33,6 @@
     flex: 1 100%;
 
     padding: 0.5%;
-
-  
-
 }
 
 .title
@@ -48,11 +45,26 @@
 .log
 {
     font-weight: 400;
-    margin-top: 2%;
+    margin-top: 1%;
     flex: 1;
 }
 
-.loginForm
+.logInForm
+{
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: column wrap;
+
+    flex-flow: column wrap;
+
+    text-align: right;
+}
+
+.logOutForm
 {
     display: -webkit-box;
     display: -moz-box;
@@ -66,8 +78,9 @@
 
     text-align: right;
 
-
+    display: none;
 }
+
 .credentials
 {
     opacity: 0.5;
@@ -78,7 +91,7 @@
 }
 
 .questionnarie
-{
+ {
     border: 2px solid lightgrey;
 }
 

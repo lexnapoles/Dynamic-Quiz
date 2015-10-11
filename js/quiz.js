@@ -1,4 +1,4 @@
-var loginForm = document.getElementsByClassName("loginForm")[0];
+var logInForm = document.getElementsByClassName("logInForm")[0];
 var questionDiv  = document.getElementsByClassName("question")[0];
 var questionsForm = document.getElementsByClassName("questionsForm")[0];
 var choicesList = document.getElementsByClassName("choicesList")[0];
@@ -182,13 +182,14 @@ var Log = function() {
 
         logIn: function(username, password) {
 
-            var  passwd = localStorage.getItem(username);
-
-            if (passwd === null) {
+            var user = localStorage.getItem(user);
+            if (user === null) {
+                localStorage.setItem("username", username);
                 localStorage.setItem(username, password);
+
                 logged = true;
             }
-            else if (passwd === password) {
+            else if (user === username) {
                 logged = true;
             }
         },
@@ -335,27 +336,51 @@ var Application = function() {
         }
     };
 
-    function getUsernameAndPassword() {
+    var getUsernameAndPassword = function() {
 
         var info = [];
-        var elements = loginForm.elements;
+        var field = logInForm.elements;
 
-        for (var i = 0, len = elements.length; i < len; i++) {
-            info[info.length] = elements[i].value;
+        for (var i = 0, len = field.length; i < len; i++) {
+            if (field[i].type !== "submit") {
+                info[info.length] = field[i].value;
+            }
         }
         return info;
-    }
+    };
+
+    var writeUserWelcomeMessage = function(username) {
+
+        var paragraph = document.createElement("P");
+        var text = document.createTextNode("Hello, " + username + ".");
+        paragraph.appendChild(text);
+
+        var userMessageDiv = document.getElementsByClassName("userMessage")[0];
+        userMessageDiv.appendChild(paragraph);
+    };
+
+    var loadLogOutForm = function(username) {
+
+        $(".logInForm").hide();
+
+        writeUserWelcomeMessage(username);
+
+        $(".logOutForm").show();
+    };
+
 
     var logInHandler = function(event) {
 
         event.preventDefault();
 
-        window.alert("login");
-
         if (!Log.isUserLoggedIn()) {
-            Log.logIn.apply(this, getUsernameAndPassword());
-            window.alert(getUsernameAndPassword().length);
-            window.alert(getUsernameAndPassword()[0], getUsernameAndPassword()[1]);
+
+            var userInfo = getUsernameAndPassword();
+
+            Log.logIn.apply(this, userInfo);
+            var username = userInfo[0];
+
+            loadLogOutForm(username);
         }
 
     };
@@ -370,9 +395,9 @@ var Application = function() {
                 questionsForm.addEventListener("click", previousQuestionHandler, false);
                 questionsForm.addEventListener("submit", nextQuestionHandler, false);
 
-                loginForm.addEventListener("submit", logInHandler, false);
-                loginForm.addEventListener("click",defaultValueOff, false);
-                loginForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
+                logInForm.addEventListener("submit", logInHandler, false);
+                logInForm.addEventListener("click",defaultValueOff, false);
+                logInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
             });
         }
     };
