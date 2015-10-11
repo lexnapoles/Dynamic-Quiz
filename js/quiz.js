@@ -1,4 +1,5 @@
 var logInForm = document.getElementsByClassName("logInForm")[0];
+var logOutForm = document.getElementsByClassName("logOutForm")[0];
 var questionDiv  = document.getElementsByClassName("question")[0];
 var questionsForm = document.getElementsByClassName("questionsForm")[0];
 var choicesList = document.getElementsByClassName("choicesList")[0];
@@ -368,12 +369,29 @@ var Application = function() {
         $(".logOutForm").show();
     };
 
+    var logInFormInputvaluesToDefault = function() {
+        logInForm.elements[0].value = "username";
+        logInForm.elements[1].value = "password";
+    }
+
+    var logInFormHasNoDefaultValues = function () {
+        return logInForm.elements[0].value !== "username";
+    }
+
+    var loadLogInForm = function() {
+
+        $(".logOutForm").hide();
+
+        logInFormInputvaluesToDefault();
+
+        $(".logInForm").show();
+    };
 
     var logInHandler = function(event) {
 
         event.preventDefault();
 
-        if (!Log.isUserLoggedIn()) {
+        if (!Log.isUserLoggedIn() && logInFormHasNoDefaultValues()) {
 
             var userInfo = getUsernameAndPassword();
 
@@ -382,7 +400,18 @@ var Application = function() {
 
             loadLogOutForm(username);
         }
+    };
 
+    var logOutHandler = function(event) {
+
+        event.preventDefault();
+
+        Log.logOut();
+
+        var userMessageDiv = document.getElementsByClassName("userMessage")[0];
+        clearNodeChilds(userMessageDiv);
+
+        loadLogInForm();
     };
 
     return {
@@ -398,7 +427,9 @@ var Application = function() {
                 logInForm.addEventListener("submit", logInHandler, false);
                 logInForm.addEventListener("click",defaultValueOff, false);
                 logInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
-            });
+
+                logOutForm.addEventListener("submit", logOutHandler, false);
+        });
         }
     };
 }();
