@@ -201,6 +201,15 @@ var Log = function() {
 
         isUserLoggedIn: function() {
             return logged;
+        },
+
+        userAlreadyExists: function() {
+            return localStorage.length;
+        },
+
+        logExistingUser: function() {
+            logged = true;
+            return localStorage.getItem("username");
         }
     };
 }();
@@ -372,11 +381,11 @@ var Application = function() {
     var logInFormInputvaluesToDefault = function() {
         logInForm.elements[0].value = "username";
         logInForm.elements[1].value = "password";
-    }
+    };
 
     var logInFormHasNoDefaultValues = function () {
         return logInForm.elements[0].value !== "username";
-    }
+    };
 
     var loadLogInForm = function() {
 
@@ -418,6 +427,11 @@ var Application = function() {
         startQuiz: function () {
 
             questions.loadQuestions.done( function() {
+
+                if (Log.userAlreadyExists()) {
+                    var username = Log.logExistingUser();
+                    loadLogOutForm(username);
+                }
 
                 nextQuestion();
 
