@@ -1,13 +1,13 @@
 var logInForm = document.getElementsByClassName("logInForm")[0];
 var logOutForm = document.getElementsByClassName("logOutForm")[0];
-var questionDiv  = document.getElementsByClassName("question")[0];
+var questionDiv = document.getElementsByClassName("question")[0];
 var questionsForm = document.getElementsByClassName("questionsForm")[0];
 var choicesList = document.getElementsByClassName("choicesList")[0];
 
-var clearNodeChilds = function(node) {
+var clearNodeChilds = function (node) {
     "use strict";
 
-    while(node.hasChildNodes()) {
+    while (node.hasChildNodes()) {
         node.removeChild(node.lastChild);
     }
 };
@@ -19,7 +19,7 @@ function Question(obj) {
     var choices;
     var correctAnswer;
 
-    if(obj !== null) {
+    if (obj !== null) {
 
         question = obj.question;
         choices = obj.choices;
@@ -34,17 +34,17 @@ function Question(obj) {
         return choices;
     };
 
-    this.isCorrectChoice = function(choice) {
+    this.isCorrectChoice = function (choice) {
         return choice === correctAnswer;
     };
 }
 
-var Questionnaire = function() {
+var Questionnaire = function () {
     "use strict";
 
-    var fillChoices = function(choicesList, choices) {
+    var fillChoices = function (choicesList, choices) {
 
-        for(var i = 0; i < choices.length; i++) {
+        for (var i = 0; i < choices.length; i++) {
 
             var li = document.createElement("LI");
             var input = document.createElement("INPUT");
@@ -59,7 +59,7 @@ var Questionnaire = function() {
         }
     };
 
-    var fillQuestion = function(text) {
+    var fillQuestion = function (text) {
 
         var label = document.createElement("LABEL");
 
@@ -70,7 +70,7 @@ var Questionnaire = function() {
     };
 
     return {
-        fillQuestionnaire: function(question) {
+        fillQuestionnaire: function (question) {
 
             clearNodeChilds(questionDiv);
             clearNodeChilds(choicesList);
@@ -79,10 +79,9 @@ var Questionnaire = function() {
             fillChoices(choicesList, question.getChoices());
         },
 
-        setUserAnswer: function(answer) {
+        setUserAnswer: function (answer) {
 
-            if(answer < questionsForm.elements.length)
-            {
+            if (answer < questionsForm.elements.length) {
                 questionsForm.elements[answer].checked = true;
             }
         }
@@ -93,24 +92,24 @@ function Score() {
     "use strict";
     var score = 0;
 
-    var changeTitle = function() {
+    var changeTitle = function () {
 
         var title = document.getElementsByClassName("title")[0].firstChild;
         title.text = "Score";
     };
 
 
-    this.increaseScore = function() {
+    this.increaseScore = function () {
         score++;
     };
 
-    this.decreaseScore = function() {
-        if(score > 0) {
+    this.decreaseScore = function () {
+        if (score > 0) {
             score--;
         }
     };
 
-    this.showScore = function() {
+    this.showScore = function () {
 
         changeTitle();
 
@@ -127,7 +126,7 @@ function Score() {
 
         h3.appendChild(text);
         main.appendChild(h3);
-};
+    };
 }
 
 function QuestionsAndAnswers(jsonFile) {
@@ -136,54 +135,54 @@ function QuestionsAndAnswers(jsonFile) {
     var questions = [];
     var currentQuestion = -1;
 
-    this.loadQuestions = function() {
+    this.loadQuestions = function () {
 
-      return $.getJSON(jsonFile, function(data) {
+        return $.getJSON(jsonFile, function (data) {
 
-          $.each(data, function (i) {
-              questions[questions.length] = new Question(data[i]);
-           });
+            $.each(data, function (i) {
+                questions[questions.length] = new Question(data[i]);
+            });
         });
     }();
 
-    this.next = function(){
+    this.next = function () {
         currentQuestion++;
         return questions[currentQuestion];
     };
 
-    this.previous = function() {
+    this.previous = function () {
         currentQuestion--;
         return questions[currentQuestion];
 
     };
 
-    this.noMoreQuestions = function() {
+    this.noMoreQuestions = function () {
         return currentQuestion >= questions.length - 1;
     };
 
-    this.index = function() {
+    this.index = function () {
         return currentQuestion;
     };
 
-    this.isFirstQuestion = function() {
+    this.isFirstQuestion = function () {
         return currentQuestion === 0;
     };
 
-    this.isCorrectChoice = function(choice) {
+    this.isCorrectChoice = function (choice) {
         return questions[currentQuestion].isCorrectChoice(choice);
     };
 }
 
-var Log = function() {
+var Log = function () {
     "use strict";
 
     var logged = false;
 
     return {
 
-        logIn: function(username, password) {
+        logIn: function (username, password) {
 
-            var user = localStorage.getItem(user);
+            var user = localStorage.getItem("username");
             if (user === null) {
                 localStorage.setItem("username", username);
                 localStorage.setItem(username, password);
@@ -195,27 +194,31 @@ var Log = function() {
             }
         },
 
-        logOut: function() {
+        logOut: function () {
             logged = false;
         },
 
-        isUserLoggedIn: function() {
+        isUserLoggedIn: function () {
             return logged;
         },
 
-        userAlreadyExists: function() {
+        userAlreadyExists: function () {
             return localStorage.length;
         },
 
-        logExistingUser: function() {
+        logExistingUser: function () {
             logged = true;
             return localStorage.getItem("username");
+        },
+
+        deleteUsers: function () {
+            localStorage.clear();
         }
     };
 }();
 
 
-var Application = function() {
+var Application = function () {
     "use strict";
 
     var questions = new QuestionsAndAnswers("Q&A.json");
@@ -224,13 +227,13 @@ var Application = function() {
 
     var score = new Score();
 
-    var getChoiceChecked = function(form) {
+    var getChoiceChecked = function (form) {
 
         var choices = form.elements;
 
-        for(var i = 0, len = choices.length; i < len; i++) {
+        for (var i = 0, len = choices.length; i < len; i++) {
 
-            if(choices[i].checked) {
+            if (choices[i].checked) {
 
                 return i;
             }
@@ -238,12 +241,12 @@ var Application = function() {
         return -1;
     };
 
-    var userPreviouslyAnswered = function() {
+    var userPreviouslyAnswered = function () {
         return questions.index() < userAnswers.length;
     };
 
-    var saveUserAnswer = function(answer) {
-        if(userPreviouslyAnswered()) {
+    var saveUserAnswer = function (answer) {
+        if (userPreviouslyAnswered()) {
             userAnswers[questions.index()] = answer;
         }
         else {
@@ -251,25 +254,25 @@ var Application = function() {
         }
     };
 
-    var getUserAnswer = function() {
+    var getUserAnswer = function () {
         return userAnswers[questions.index()];
     };
 
-    var nextQuestion = function() {
+    var nextQuestion = function () {
 
         Questionnaire.fillQuestionnaire(questions.next());
 
-        if(userPreviouslyAnswered()) {
+        if (userPreviouslyAnswered()) {
             Questionnaire.setUserAnswer(getUserAnswer());
         }
     };
 
-    var previousQuestion = function() {
+    var previousQuestion = function () {
         Questionnaire.fillQuestionnaire(questions.previous());
         Questionnaire.setUserAnswer(getUserAnswer());
     };
 
-    var nextQuestionHandler = function(event) {
+    var nextQuestionHandler = function (event) {
 
         event.preventDefault();
 
@@ -287,7 +290,7 @@ var Application = function() {
 
                 var QA = $(".QA");
 
-                QA.fadeTo("fast", 0,  nextQuestion);
+                QA.fadeTo("fast", 0, nextQuestion);
 
                 QA.fadeTo("fast", 1);
             }
@@ -300,11 +303,11 @@ var Application = function() {
         }
     };
 
-    var previousQuestionHandler = function(event) {
+    var previousQuestionHandler = function (event) {
 
         var target = event.target;
 
-        if(target.className === "backBtn") {
+        if (target.className === "backBtn") {
 
             if (!questions.isFirstQuestion()) {
 
@@ -335,7 +338,7 @@ var Application = function() {
 
         var target = event.target;
 
-        if(target.value === "") {
+        if (target.value === "") {
 
             if (target.className === "username") {
                 target.value = "username";
@@ -346,7 +349,7 @@ var Application = function() {
         }
     };
 
-    var getUsernameAndPassword = function() {
+    var getUsernameAndPassword = function () {
 
         var info = [];
         var field = logInForm.elements;
@@ -359,7 +362,7 @@ var Application = function() {
         return info;
     };
 
-    var writeUserWelcomeMessage = function(username) {
+    var writeUserWelcomeMessage = function (username) {
 
         var paragraph = document.createElement("P");
         var text = document.createTextNode("Hello, " + username + ".");
@@ -369,7 +372,7 @@ var Application = function() {
         userMessageDiv.appendChild(paragraph);
     };
 
-    var loadLogOutForm = function(username) {
+    var loadLogOutForm = function (username) {
 
         $(".logInForm").hide();
 
@@ -378,7 +381,7 @@ var Application = function() {
         $(".logOutForm").show();
     };
 
-    var logInFormInputvaluesToDefault = function() {
+    var logInFormInputvaluesToDefault = function () {
         logInForm.elements[0].value = "username";
         logInForm.elements[1].value = "password";
     };
@@ -387,7 +390,7 @@ var Application = function() {
         return logInForm.elements[0].value !== "username";
     };
 
-    var loadLogInForm = function() {
+    var loadLogInForm = function () {
 
         $(".logOutForm").hide();
 
@@ -396,7 +399,12 @@ var Application = function() {
         $(".logInForm").show();
     };
 
-    var logInHandler = function(event) {
+    var noRememberIsChecked = function () {
+        var noRemember = logInForm.elements[2];
+        return noRemember.checked;
+    };
+
+    var logInHandler = function (event) {
 
         event.preventDefault();
 
@@ -407,11 +415,17 @@ var Application = function() {
             Log.logIn.apply(this, userInfo);
             var username = userInfo[0];
 
+            if (noRememberIsChecked()) {
+                window.addEventListener("unload", function () {
+                    Log.deleteUsers();
+                }, false);
+            }
+
             loadLogOutForm(username);
         }
     };
 
-    var logOutHandler = function(event) {
+    var logOutHandler = function (event) {
 
         event.preventDefault();
 
@@ -426,7 +440,7 @@ var Application = function() {
     return {
         startQuiz: function () {
 
-            questions.loadQuestions.done( function() {
+            questions.loadQuestions.done(function () {
 
                 if (Log.userAlreadyExists()) {
                     var username = Log.logExistingUser();
@@ -439,11 +453,11 @@ var Application = function() {
                 questionsForm.addEventListener("submit", nextQuestionHandler, false);
 
                 logInForm.addEventListener("submit", logInHandler, false);
-                logInForm.addEventListener("click",defaultValueOff, false);
+                logInForm.addEventListener("click", defaultValueOff, false);
                 logInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
 
                 logOutForm.addEventListener("submit", logOutHandler, false);
-        });
+            });
         }
     };
 }();

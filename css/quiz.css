@@ -64,6 +64,10 @@
     text-align: right;
 }
 
+.noRemember
+{
+    font-weight: 300;
+}
 .logOutForm
 {
     display: -webkit-box;
