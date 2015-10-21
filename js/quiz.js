@@ -1,8 +1,8 @@
-var logInForm = document.getElementsByClassName("logInForm")[0];
-var logOutForm = document.getElementsByClassName("logOutForm")[0];
-var questionDiv = document.getElementsByClassName("question")[0];
-var questionsForm = document.getElementsByClassName("questionsForm")[0];
-var choicesList = document.getElementsByClassName("choicesList")[0];
+var logInForm = document.getElementsByClassName("logInForm")[0],
+    logOutForm = document.getElementsByClassName("logOutForm")[0],
+    questionDiv = document.getElementsByClassName("question")[0],
+    questionsForm = document.getElementsByClassName("questionsForm")[0],
+    choicesList = document.getElementsByClassName("choicesList")[0];
 
 var clearNodeChilds = function (node) {
     "use strict";
@@ -12,12 +12,12 @@ var clearNodeChilds = function (node) {
     }
 };
 
-function Question(obj) {
+function Question (obj) {
     "use strict";
 
-    var question;
-    var choices;
-    var correctAnswer;
+    var question,
+        choices,
+        correctAnswer;
 
     if (obj !== null) {
 
@@ -46,8 +46,9 @@ var Questionnaire = function () {
 
         for (var i = 0; i < choices.length; i++) {
 
-            var li = document.createElement("LI");
-            var input = document.createElement("INPUT");
+            var li = document.createElement("LI"),
+                input = document.createElement("INPUT");
+
             input.type = "radio";
             input.name = "choice";
 
@@ -61,9 +62,9 @@ var Questionnaire = function () {
 
     var fillQuestion = function (text) {
 
-        var label = document.createElement("LABEL");
+        var label = document.createElement("LABEL"),
+            questionText = document.createTextNode(text);
 
-        var questionText = document.createTextNode(text);
         label.appendChild(questionText);
 
         questionDiv.appendChild(label);
@@ -132,8 +133,8 @@ function Score() {
 function QuestionsAndAnswers(jsonFile) {
     "use strict";
 
-    var questions = [];
-    var currentQuestion = -1;
+    var questions = [],
+        currentQuestion = -1;
 
     this.loadQuestions = function () {
 
@@ -221,11 +222,9 @@ var Log = function () {
 var Application = function () {
     "use strict";
 
-    var questions = new QuestionsAndAnswers("Q&A.json");
-
-    var userAnswers = [];
-
-    var score = new Score();
+    var questions = new QuestionsAndAnswers("Q&A.json"),
+        userAnswers = [],
+        score = new Score();
 
     var getChoiceChecked = function (form) {
 
@@ -351,8 +350,8 @@ var Application = function () {
 
     var getUsernameAndPassword = function () {
 
-        var info = [];
-        var field = logInForm.elements;
+        var info = [],
+            field = logInForm.elements;
 
         for (var i = 0, len = field.length; i < len; i++) {
             if (field[i].type !== "submit") {
@@ -364,8 +363,9 @@ var Application = function () {
 
     var writeUserWelcomeMessage = function (username) {
 
-        var paragraph = document.createElement("P");
-        var text = document.createTextNode("Hello, " + username + ".");
+        var paragraph = document.createElement("P"),
+            text = document.createTextNode("Hello, " + username + ".");
+
         paragraph.appendChild(text);
 
         var userMessageDiv = document.getElementsByClassName("userMessage")[0];
