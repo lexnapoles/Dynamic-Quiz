@@ -12,6 +12,18 @@ var clearNodeChilds = function (node) {
     }
 };
 
+var Constants = {
+    SCORE_TITLE:            "Score",
+    USERNAME:               "username",
+    JSON_FILE:              "Q&A.json",
+    Messages: {
+        PICK_CHOICE_MSG:    "To proceed further, please pick a choice",
+        FIRST_QUESTION:     "This is the first question",
+        SCORE_MSG:          "Your final score is:",
+        HELLO_MSG:          "Hello"
+    }
+};
+
 function Question (obj) {
     "use strict";
 
@@ -118,7 +130,7 @@ function Score() {
         var main = document.getElementsByClassName("questionnarie")[0];
         clearNodeChilds(main);
 
-        var scoreMsg = "Your final score is: " + score;
+        var scoreMsg = Constants.Messages.SCORE_MSG + " " + score;
 
         var h3 = document.createElement("H3");
         h3.className = "score";
@@ -183,9 +195,9 @@ var Log = function () {
 
         logIn: function (username, password) {
 
-            var user = localStorage.getItem("username");
+            var user = localStorage.getItem(Constants.USERNAME);
             if (user === null) {
-                localStorage.setItem("username", username);
+                localStorage.setItem(Constants.USERNAME, username);
                 localStorage.setItem(username, password);
 
                 logged = true;
@@ -209,7 +221,7 @@ var Log = function () {
 
         logExistingUser: function () {
             logged = true;
-            return localStorage.getItem("username");
+            return localStorage.getItem(Constants.USERNAME);
         },
 
         deleteUsers: function () {
@@ -222,7 +234,7 @@ var Log = function () {
 var Application = function () {
     "use strict";
 
-    var questions = new QuestionsAndAnswers("Q&A.json"),
+    var questions = new QuestionsAndAnswers(Constants.JSON_FILE),
         userAnswers = [],
         score = new Score();
 
@@ -298,7 +310,7 @@ var Application = function () {
             }
         }
         else {
-            window.alert("To proceed further, please pick a choice");
+            window.alert(Constants.Messages.PICK_CHOICE_MSG);
         }
     };
 
@@ -319,7 +331,7 @@ var Application = function () {
                 score.decreaseScore();
             }
             else {
-                window.alert("This is the first question");
+                window.alert(Constants.Messages.FIRST_QUESTION);
             }
         }
     };
@@ -364,7 +376,7 @@ var Application = function () {
     var writeUserWelcomeMessage = function (username) {
 
         var paragraph = document.createElement("P"),
-            text = document.createTextNode("Hello, " + username + ".");
+            text = document.createTextNode(Constants.message.HELLO_MSG + ", " + username);
 
         paragraph.appendChild(text);
 
