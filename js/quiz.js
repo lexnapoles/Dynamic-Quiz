@@ -193,13 +193,17 @@ var Quiz = function () {
             logIn: function (username, password) {
 
                 var user = localStorage.getItem(Constants.USERNAME);
-                if (user === null) {
+                if (user === username) {
+                    logged = true;
                     localStorage.setItem(Constants.USERNAME, username);
                     localStorage.setItem(username, password);
 
                     logged = true;
                 }
-                else if (user === username) {
+                else {
+                    localStorage.setItem(Constants.USERNAME, username);
+                    localStorage.setItem(username, password);
+
                     logged = true;
                 }
             },
