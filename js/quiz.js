@@ -1,479 +1,481 @@
-var logInForm = document.getElementsByClassName("logInForm")[0],
-    logOutForm = document.getElementsByClassName("logOutForm")[0],
-    questionDiv = document.getElementsByClassName("question")[0],
-    questionsForm = document.getElementsByClassName("questionsForm")[0],
-    choicesList = document.getElementsByClassName("choicesList")[0];
-
-var clearNodeChilds = function (node) {
+var Quiz = function () {
     "use strict";
 
-    while (node.hasChildNodes()) {
-        node.removeChild(node.lastChild);
-    }
-};
+    var logInForm = document.getElementsByClassName("logInForm")[0],
+        logOutForm = document.getElementsByClassName("logOutForm")[0],
+        questionDiv = document.getElementsByClassName("question")[0],
+        questionsForm = document.getElementsByClassName("questionsForm")[0],
+        choicesList = document.getElementsByClassName("choicesList")[0];
 
-var Constants = {
-    SCORE_TITLE:            "Score",
-    USERNAME:               "username",
-    JSON_FILE:              "Q&A.json",
-    Messages: {
-        PICK_CHOICE_MSG:    "To proceed further, please pick a choice",
-        FIRST_QUESTION:     "This is the first question",
-        SCORE_MSG:          "Your final score is:",
-        HELLO_MSG:          "Hello"
-    }
-};
+    var clearNodeChilds = function (node) {
 
-function Question (obj) {
-    "use strict";
-
-    var question,
-        choices,
-        correctAnswer;
-
-    if (obj !== null) {
-
-        question = obj.question;
-        choices = obj.choices;
-        correctAnswer = obj.correctAnswer;
-    }
-
-    this.getQuestion = function () {
-        return question;
-    };
-
-    this.getChoices = function () {
-        return choices;
-    };
-
-    this.isCorrectChoice = function (choice) {
-        return choice === correctAnswer;
-    };
-}
-
-var Questionnaire = function () {
-    "use strict";
-
-    var fillChoices = function (choicesList, choices) {
-
-        for (var i = 0; i < choices.length; i++) {
-
-            var li = document.createElement("LI"),
-                input = document.createElement("INPUT");
-
-            input.type = "radio";
-            input.name = "choice";
-
-            li.appendChild(input);
-
-            var text = document.createTextNode(choices[i]);
-            li.appendChild(text);
-            choicesList.appendChild(li);
+        while (node.hasChildNodes()) {
+            node.removeChild(node.lastChild);
         }
     };
 
-    var fillQuestion = function (text) {
-
-        var label = document.createElement("LABEL"),
-            questionText = document.createTextNode(text);
-
-        label.appendChild(questionText);
-
-        questionDiv.appendChild(label);
+    var Constants = {
+        SCORE_TITLE: "Score",
+        USERNAME: "username",
+        JSON_FILE: "Q&A.json",
+        Messages: {
+            PICK_CHOICE_MSG: "To proceed further, please pick a choice",
+            FIRST_QUESTION: "This is the first question",
+            SCORE_MSG: "Your final score is:",
+            HELLO_MSG: "Hello"
+        }
     };
 
-    return {
-        fillQuestionnaire: function (question) {
+    function Question(obj) {
 
-            clearNodeChilds(questionDiv);
-            clearNodeChilds(choicesList);
+        var question,
+            choices,
+            correctAnswer;
 
-            fillQuestion(question.getQuestion());
-            fillChoices(choicesList, question.getChoices());
-        },
+        if (obj !== null) {
 
-        setUserAnswer: function (answer) {
+            question = obj.question;
+            choices = obj.choices;
+            correctAnswer = obj.correctAnswer;
+        }
 
-            if (answer < questionsForm.elements.length) {
-                questionsForm.elements[answer].checked = true;
+        this.getQuestion = function () {
+            return question;
+        };
+
+        this.getChoices = function () {
+            return choices;
+        };
+
+        this.isCorrectChoice = function (choice) {
+            return choice === correctAnswer;
+        };
+    }
+
+    var Questionnaire = function () {
+
+        var fillChoices = function (choicesList, choices) {
+
+            for (var i = 0; i < choices.length; i++) {
+
+                var li = document.createElement("LI"),
+                    input = document.createElement("INPUT");
+
+                input.type = "radio";
+                input.name = "choice";
+
+                li.appendChild(input);
+
+                var text = document.createTextNode(choices[i]);
+                li.appendChild(text);
+                choicesList.appendChild(li);
             }
-        }
-    };
-}();
+        };
 
-function Score() {
-    "use strict";
-    var score = 0;
+        var fillQuestion = function (text) {
 
-    var changeTitle = function () {
+            var label = document.createElement("LABEL"),
+                questionText = document.createTextNode(text);
 
-        var title = document.getElementsByClassName("title")[0].firstChild;
-        title.text = "Score";
-    };
+            label.appendChild(questionText);
 
+            questionDiv.appendChild(label);
+        };
 
-    this.increaseScore = function () {
-        score++;
-    };
+        return {
+            fillQuestionnaire: function (question) {
 
-    this.decreaseScore = function () {
-        if (score > 0) {
-            score--;
-        }
-    };
+                clearNodeChilds(questionDiv);
+                clearNodeChilds(choicesList);
 
-    this.showScore = function () {
+                fillQuestion(question.getQuestion());
+                fillChoices(choicesList, question.getChoices());
+            },
 
-        changeTitle();
+            setUserAnswer: function (answer) {
 
-        questionsForm.onsubmit = null;
-        var main = document.getElementsByClassName("questionnarie")[0];
-        clearNodeChilds(main);
-
-        var scoreMsg = Constants.Messages.SCORE_MSG + " " + score;
-
-        var h3 = document.createElement("H3");
-        h3.className = "score";
-
-        var text = document.createTextNode(scoreMsg);
-
-        h3.appendChild(text);
-        main.appendChild(h3);
-    };
-}
-
-function QuestionsAndAnswers(jsonFile) {
-    "use strict";
-
-    var questions = [],
-        currentQuestion = -1;
-
-    this.loadQuestions = function () {
-
-        return $.getJSON(jsonFile, function (data) {
-
-            $.each(data, function (i) {
-                questions[questions.length] = new Question(data[i]);
-            });
-        });
+                if (answer < questionsForm.elements.length) {
+                    questionsForm.elements[answer].checked = true;
+                }
+            }
+        };
     }();
 
-    this.next = function () {
-        currentQuestion++;
-        return questions[currentQuestion];
-    };
+    function Score() {
+        var score = 0;
 
-    this.previous = function () {
-        currentQuestion--;
-        return questions[currentQuestion];
+        var changeTitle = function () {
 
-    };
+            var title = document.getElementsByClassName("title")[0].firstChild;
+            title.text = "Score";
+        };
 
-    this.noMoreQuestions = function () {
-        return currentQuestion >= questions.length - 1;
-    };
 
-    this.index = function () {
-        return currentQuestion;
-    };
+        this.increaseScore = function () {
+            score++;
+        };
 
-    this.isFirstQuestion = function () {
-        return currentQuestion === 0;
-    };
+        this.decreaseScore = function () {
+            if (score > 0) {
+                score--;
+            }
+        };
 
-    this.isCorrectChoice = function (choice) {
-        return questions[currentQuestion].isCorrectChoice(choice);
-    };
-}
+        this.showScore = function () {
 
-var Log = function () {
-    "use strict";
+            changeTitle();
 
-    var logged = false;
+            questionsForm.onsubmit = null;
+            var main = document.getElementsByClassName("questionnarie")[0];
+            clearNodeChilds(main);
 
-    return {
+            var scoreMsg = Constants.Messages.SCORE_MSG + " " + score;
 
-        logIn: function (username, password) {
+            var h3 = document.createElement("H3");
+            h3.className = "score";
 
-            var user = localStorage.getItem(Constants.USERNAME);
-            if (user === null) {
-                localStorage.setItem(Constants.USERNAME, username);
-                localStorage.setItem(username, password);
+            var text = document.createTextNode(scoreMsg);
 
+            h3.appendChild(text);
+            main.appendChild(h3);
+        };
+    }
+
+    function QuestionsAndAnswers(jsonFile) {
+
+        var questions = [],
+            currentQuestion = -1;
+
+        this.loadQuestions = function () {
+
+            return $.getJSON(jsonFile, function (data) {
+
+                $.each(data, function (i) {
+                    questions[questions.length] = new Question(data[i]);
+                });
+            });
+        }();
+
+        this.next = function () {
+            currentQuestion++;
+            return questions[currentQuestion];
+        };
+
+        this.previous = function () {
+            currentQuestion--;
+            return questions[currentQuestion];
+
+        };
+
+        this.noMoreQuestions = function () {
+            return currentQuestion >= questions.length - 1;
+        };
+
+        this.index = function () {
+            return currentQuestion;
+        };
+
+        this.isFirstQuestion = function () {
+            return currentQuestion === 0;
+        };
+
+        this.isCorrectChoice = function (choice) {
+            return questions[currentQuestion].isCorrectChoice(choice);
+        };
+    }
+
+    var Log = function () {
+
+        var logged = false;
+
+        return {
+
+            logIn: function (username, password) {
+
+                var user = localStorage.getItem(Constants.USERNAME);
+                if (user === null) {
+                    localStorage.setItem(Constants.USERNAME, username);
+                    localStorage.setItem(username, password);
+
+                    logged = true;
+                }
+                else if (user === username) {
+                    logged = true;
+                }
+            },
+
+            logOut: function () {
+                logged = false;
+            },
+
+            isUserLoggedIn: function () {
+                return logged;
+            },
+
+            userAlreadyExists: function () {
+                return localStorage.length;
+            },
+
+            logExistingUser: function () {
                 logged = true;
+                return localStorage.getItem(Constants.USERNAME);
+            },
+
+            deleteUsers: function () {
+                localStorage.clear();
             }
-            else if (user === username) {
-                logged = true;
+        };
+    }();
+
+    var Application = function () {
+
+        var questions = new QuestionsAndAnswers(Constants.JSON_FILE),
+            userAnswers = [],
+            score = new Score();
+
+        var getChoiceChecked = function (form) {
+
+            var choices = form.elements;
+
+            for (var i = 0, len = choices.length; i < len; i++) {
+
+                if (choices[i].checked) {
+
+                    return i;
+                }
             }
-        },
+            return -1;
+        };
 
-        logOut: function () {
-            logged = false;
-        },
+        var userPreviouslyAnswered = function () {
+            return questions.index() < userAnswers.length;
+        };
 
-        isUserLoggedIn: function () {
-            return logged;
-        },
-
-        userAlreadyExists: function () {
-            return localStorage.length;
-        },
-
-        logExistingUser: function () {
-            logged = true;
-            return localStorage.getItem(Constants.USERNAME);
-        },
-
-        deleteUsers: function () {
-            localStorage.clear();
-        }
-    };
-}();
-
-
-var Application = function () {
-    "use strict";
-
-    var questions = new QuestionsAndAnswers(Constants.JSON_FILE),
-        userAnswers = [],
-        score = new Score();
-
-    var getChoiceChecked = function (form) {
-
-        var choices = form.elements;
-
-        for (var i = 0, len = choices.length; i < len; i++) {
-
-            if (choices[i].checked) {
-
-                return i;
-            }
-        }
-        return -1;
-    };
-
-    var userPreviouslyAnswered = function () {
-        return questions.index() < userAnswers.length;
-    };
-
-    var saveUserAnswer = function (answer) {
-        if (userPreviouslyAnswered()) {
-            userAnswers[questions.index()] = answer;
-        }
-        else {
-            userAnswers[userAnswers.length] = answer;
-        }
-    };
-
-    var getUserAnswer = function () {
-        return userAnswers[questions.index()];
-    };
-
-    var nextQuestion = function () {
-
-        Questionnaire.fillQuestionnaire(questions.next());
-
-        if (userPreviouslyAnswered()) {
-            Questionnaire.setUserAnswer(getUserAnswer());
-        }
-    };
-
-    var previousQuestion = function () {
-        Questionnaire.fillQuestionnaire(questions.previous());
-        Questionnaire.setUserAnswer(getUserAnswer());
-    };
-
-    var nextQuestionHandler = function (event) {
-
-        event.preventDefault();
-
-        var choiceChecked = getChoiceChecked(questionsForm);
-
-        if (choiceChecked >= 0) {
-
-            saveUserAnswer(choiceChecked);
-
-            if (questions.isCorrectChoice(choiceChecked)) {
-                score.increaseScore();
-            }
-
-            if (!questions.noMoreQuestions()) {
-
-                var QA = $(".QA");
-
-                QA.fadeTo("fast", 0, nextQuestion);
-
-                QA.fadeTo("fast", 1);
+        var saveUserAnswer = function (answer) {
+            if (userPreviouslyAnswered()) {
+                userAnswers[questions.index()] = answer;
             }
             else {
-                score.showScore();
+                userAnswers[userAnswers.length] = answer;
             }
-        }
-        else {
-            window.alert(Constants.Messages.PICK_CHOICE_MSG);
-        }
-    };
+        };
 
-    var previousQuestionHandler = function (event) {
+        var getUserAnswer = function () {
+            return userAnswers[questions.index()];
+        };
 
-        var target = event.target;
+        var nextQuestion = function () {
 
-        if (target.className === "backBtn") {
+            Questionnaire.fillQuestionnaire(questions.next());
 
-            if (!questions.isFirstQuestion()) {
-
-                var QA = $(".QA");
-
-                QA.fadeTo("fast", 0, previousQuestion);
-
-                QA.fadeTo("fast", 1);
-
-                score.decreaseScore();
+            if (userPreviouslyAnswered()) {
+                Questionnaire.setUserAnswer(getUserAnswer());
             }
-            else {
-                window.alert(Constants.Messages.FIRST_QUESTION);
-            }
-        }
-    };
+        };
 
-    var defaultValueOff = function (event) {
+            var previousQuestion = function () {
+                Questionnaire.fillQuestionnaire(questions.previous());
+                Questionnaire.setUserAnswer(getUserAnswer());
+            };
 
-        var target = event.target;
+            var nextQuestionHandler = function (event) {
 
-        if (target.className === "username" || target.className === "password") {
-            target.value = "";
-        }
-    };
+                event.preventDefault();
 
-    var defaultValueOnIfNoValue = function (event) {
+                var choiceChecked = getChoiceChecked(questionsForm);
 
-        var target = event.target;
+                if (choiceChecked >= 0) {
 
-        if (target.value === "") {
+                    saveUserAnswer(choiceChecked);
 
-            if (target.className === "username") {
-                target.value = "username";
-            }
-            else if (target.className === "password") {
-                target.value = "password";
-            }
-        }
-    };
+                    if (questions.isCorrectChoice(choiceChecked)) {
+                        score.increaseScore();
+                    }
 
-    var getUsernameAndPassword = function () {
+                    if (!questions.noMoreQuestions()) {
 
-        var info = [],
-            field = logInForm.elements;
+                        var QA = $(".QA");
 
-        for (var i = 0, len = field.length; i < len; i++) {
-            if (field[i].type !== "submit") {
-                info[info.length] = field[i].value;
-            }
-        }
-        return info;
-    };
+                        QA.fadeTo("fast", 0, nextQuestion);
 
-    var writeUserWelcomeMessage = function (username) {
+                        QA.fadeTo("fast", 1);
+                    }
+                    else {
+                        score.showScore();
+                    }
+                }
+                else {
+                    window.alert(Constants.Messages.PICK_CHOICE_MSG);
+                }
+            };
 
-        var paragraph = document.createElement("P"),
-            text = document.createTextNode(Constants.message.HELLO_MSG + ", " + username);
+            var previousQuestionHandler = function (event) {
 
-        paragraph.appendChild(text);
+                var target = event.target;
 
-        var userMessageDiv = document.getElementsByClassName("userMessage")[0];
-        userMessageDiv.appendChild(paragraph);
-    };
+                if (target.className === "backBtn") {
 
-    var loadLogOutForm = function (username) {
+                    if (!questions.isFirstQuestion()) {
 
-        $(".logInForm").hide();
+                        var QA = $(".QA");
 
-        writeUserWelcomeMessage(username);
+                        QA.fadeTo("fast", 0, previousQuestion);
 
-        $(".logOutForm").show();
-    };
+                        QA.fadeTo("fast", 1);
 
-    var logInFormInputvaluesToDefault = function () {
-        logInForm.elements[0].value = "username";
-        logInForm.elements[1].value = "password";
-    };
+                        score.decreaseScore();
+                    }
+                    else {
+                        window.alert(Constants.Messages.FIRST_QUESTION);
+                    }
+                }
+            };
 
-    var logInFormHasNoDefaultValues = function () {
-        return logInForm.elements[0].value !== "username";
-    };
+            var defaultValueOff = function (event) {
 
-    var loadLogInForm = function () {
+                var target = event.target;
 
-        $(".logOutForm").hide();
+                if (target.className === "username" || target.className === "password") {
+                    target.value = "";
+                }
+            };
 
-        logInFormInputvaluesToDefault();
+            var defaultValueOnIfNoValue = function (event) {
 
-        $(".logInForm").show();
-    };
+                var target = event.target;
 
-    var noRememberIsChecked = function () {
-        var noRemember = logInForm.elements[2];
-        return noRemember.checked;
-    };
+                if (target.value === "") {
 
-    var logInHandler = function (event) {
+                    if (target.className === "username") {
+                        target.value = "username";
+                    }
+                    else if (target.className === "password") {
+                        target.value = "password";
+                    }
+                }
+            };
 
-        event.preventDefault();
+            var getUsernameAndPassword = function () {
 
-        if (!Log.isUserLoggedIn() && logInFormHasNoDefaultValues()) {
+                var info = [],
+                    field = logInForm.elements;
 
-            var userInfo = getUsernameAndPassword();
+                for (var i = 0, len = field.length; i < len; i++) {
+                    if (field[i].type !== "submit") {
+                        info[info.length] = field[i].value;
+                    }
+                }
+                return info;
+            };
 
-            Log.logIn.apply(this, userInfo);
-            var username = userInfo[0];
+            var writeUserWelcomeMessage = function (username) {
 
-            if (noRememberIsChecked()) {
-                window.addEventListener("unload", function () {
-                    Log.deleteUsers();
-                }, false);
-            }
+                var paragraph = document.createElement("P"),
+                    text = document.createTextNode(Constants.Messages.HELLO_MSG + ", " + username);
 
-            loadLogOutForm(username);
-        }
-    };
+                paragraph.appendChild(text);
 
-    var logOutHandler = function (event) {
+                var userMessageDiv = document.getElementsByClassName("userMessage")[0];
+                userMessageDiv.appendChild(paragraph);
+            };
 
-        event.preventDefault();
+            var loadLogOutForm = function (username) {
 
-        Log.logOut();
+                $(".logInForm").hide();
 
-        var userMessageDiv = document.getElementsByClassName("userMessage")[0];
-        clearNodeChilds(userMessageDiv);
+                writeUserWelcomeMessage(username);
 
-        loadLogInForm();
-    };
+                $(".logOutForm").show();
+            };
 
-    return {
-        startQuiz: function () {
+            var logInFormInputvaluesToDefault = function () {
+                logInForm.elements[0].value = "username";
+                logInForm.elements[1].value = "password";
+            };
 
-            questions.loadQuestions.done(function () {
+            var logInFormHasNoDefaultValues = function () {
+                return logInForm.elements[0].value !== "username";
+            };
 
-                if (Log.userAlreadyExists()) {
-                    var username = Log.logExistingUser();
+            var loadLogInForm = function () {
+
+                $(".logOutForm").hide();
+
+                logInFormInputvaluesToDefault();
+
+                $(".logInForm").show();
+            };
+
+            var noRememberIsChecked = function () {
+                var noRemember = logInForm.elements[2];
+                return noRemember.checked;
+            };
+
+            var logInHandler = function (event) {
+
+                event.preventDefault();
+
+                if (!Log.isUserLoggedIn() && logInFormHasNoDefaultValues()) {
+
+                    var userInfo = getUsernameAndPassword();
+
+                    Log.logIn.apply(this, userInfo);
+                    var username = userInfo[0];
+
+                    if (noRememberIsChecked()) {
+                        window.addEventListener("unload", function () {
+                            Log.deleteUsers();
+                        }, false);
+                    }
+
                     loadLogOutForm(username);
                 }
+            };
 
-                nextQuestion();
+            var logOutHandler = function (event) {
 
-                questionsForm.addEventListener("click", previousQuestionHandler, false);
-                questionsForm.addEventListener("submit", nextQuestionHandler, false);
+                event.preventDefault();
 
-                logInForm.addEventListener("submit", logInHandler, false);
-                logInForm.addEventListener("click", defaultValueOff, false);
-                logInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
+                Log.logOut();
 
-                logOutForm.addEventListener("submit", logOutHandler, false);
-            });
+                var userMessageDiv = document.getElementsByClassName("userMessage")[0];
+                clearNodeChilds(userMessageDiv);
+
+                loadLogInForm();
+            };
+
+            return {
+                startApplication: function () {
+
+                    questions.loadQuestions.done(function () {
+
+                        if (Log.userAlreadyExists()) {
+                            var username = Log.logExistingUser();
+                            loadLogOutForm(username);
+                        }
+
+                        nextQuestion();
+
+                        questionsForm.addEventListener("click", previousQuestionHandler, false);
+                        questionsForm.addEventListener("submit", nextQuestionHandler, false);
+
+                        logInForm.addEventListener("submit", logInHandler, false);
+                        logInForm.addEventListener("click", defaultValueOff, false);
+                        logInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
+
+                        logOutForm.addEventListener("submit", logOutHandler, false);
+                    });
+                }
+            };
+        }();
+
+    return {
+        RunQuiz: function() {
+            Application.startApplication();
         }
     };
 }();
 
-Application.startQuiz();
+Quiz.RunQuiz();
 
 
