@@ -1,17 +1,6 @@
 var Quiz = function () {
     "use strict";
 
-    var logInForm = document.getElementsByClassName("logInForm")[0],
-        logOutForm = document.getElementsByClassName("logOutForm")[0],
-        questionDiv = document.getElementsByClassName("question")[0],
-        questionsForm = document.getElementsByClassName("questionsForm")[0],
-        choicesList = document.getElementsByClassName("choicesList")[0];
-
-    var clearNodeChilds = function (node) {
-        while (node.hasChildNodes()) {
-            node.removeChild(node.lastChild);
-        }
-    };
 
     var Constants = {
         SCORE_TITLE: "Score",
@@ -23,7 +12,28 @@ var Quiz = function () {
             SCORE_MSG: "Your final score is:",
             HELLO_MSG: "Hello"
         },
+        DOMLookups: function () {
+            var doc = document;
+            var logInForm = doc.getElementsByClassName("logInForm")[0],
+                logOutForm = doc.getElementsByClassName("logOutForm")[0],
+                questionDiv = doc.getElementsByClassName("question")[0],
+                questionsForm = doc.getElementsByClassName("questionsForm")[0],
+                choicesList = doc.getElementsByClassName("choicesList")[0];
 
+            return {
+                LogInForm: logInForm,
+                LogOutForm: logOutForm,
+                QuestionDiv: questionDiv,
+                QuestionsForm: questionsForm,
+                ChoicesList: choicesList
+            };
+        }()
+    };
+
+    var clearNodeChilds = function (node) {
+        while (node.hasChildNodes()) {
+            node.removeChild(node.lastChild);
+        }
     };
 
     function Question(obj) {
@@ -55,45 +65,50 @@ var Quiz = function () {
 
         var fillChoices = function (choicesList, choices) {
 
+            var doc = document;
+
             for (var i = 0; i < choices.length; i++) {
 
-                var li = document.createElement("LI"),
-                    input = document.createElement("INPUT");
+                var li = doc.createElement("LI"),
+                    input = doc.createElement("INPUT");
 
                 input.type = "radio";
                 input.name = "choice";
 
                 li.appendChild(input);
 
-                var text = document.createTextNode(choices[i]);
+                var text = doc.createTextNode(choices[i]);
                 li.appendChild(text);
                 choicesList.appendChild(li);
             }
         };
 
         var fillQuestion = function (text) {
-            var label = document.createElement("LABEL"),
-                questionText = document.createTextNode(text);
+
+            var doc = document;
+
+            var label = doc.createElement("LABEL"),
+                questionText = doc.createTextNode(text);
 
             label.appendChild(questionText);
 
-            questionDiv.appendChild(label);
+            Constants.DOMLookups.QuestionDiv.appendChild(label);
         };
 
         return {
             fillQuestionnaire: function (question) {
 
-                clearNodeChilds(questionDiv);
-                clearNodeChilds(choicesList);
+                clearNodeChilds(Constants.DOMLookups.QuestionDiv);
+                clearNodeChilds(Constants.DOMLookups.ChoicesList);
 
                 fillQuestion(question.getQuestion());
-                fillChoices(choicesList, question.getChoices());
+                fillChoices(Constants.DOMLookups.ChoicesList, question.getChoices());
             },
 
             setUserAnswer: function (answer) {
 
-                if (answer < questionsForm.elements.length) {
-                    questionsForm.elements[answer].checked = true;
+                if (answer < Constants.DOMLookups.QuestionsForm.elements.length) {
+                    Constants.DOMLookups.QuestionsForm.elements[answer].checked = true;
                 }
             }
         };
@@ -122,16 +137,18 @@ var Quiz = function () {
 
         Score.prototype.changeTitle();
 
-        questionsForm.onsubmit = null;
-        var main = document.getElementsByClassName("questionnarie")[0];
+        var doc = document;
+
+        Constants.DOMLookups.QuestionsForm.onsubmit = null;
+        var main = doc.getElementsByClassName("questionnarie")[0];
         clearNodeChilds(main);
 
         var scoreMsg = Constants.Messages.SCORE_MSG + " " + this.score;
 
-        var h3 = document.createElement("H3");
+        var h3 = doc.createElement("H3");
         h3.className = "score";
 
-        var text = document.createTextNode(scoreMsg);
+        var text = doc.createTextNode(scoreMsg);
 
         h3.appendChild(text);
         main.appendChild(h3);
@@ -279,7 +296,7 @@ var Quiz = function () {
 
             event.preventDefault();
 
-            var choiceChecked = getChoiceChecked(questionsForm);
+            var choiceChecked = getChoiceChecked(Constants.DOMLookups.QuestionsForm);
 
             if (choiceChecked >= 0) {
 
@@ -332,7 +349,7 @@ var Quiz = function () {
 
             var target = event.target;
 
-            if (target.className === "username" || target.className === "password") {
+            if (target.className === Constants.USERNAME || target.className === "password") {
                 target.value = "";
             }
         };
@@ -343,8 +360,8 @@ var Quiz = function () {
 
             if (target.value === "") {
 
-                if (target.className === "username") {
-                    target.value = "username";
+                if (target.className === Constants.USERNAME) {
+                    target.value = Constants.USERNAME;
                 }
                 else if (target.className === "password") {
                     target.value = "password";
@@ -355,7 +372,7 @@ var Quiz = function () {
         var getUsernameAndPassword = function () {
 
             var info = [],
-                field = logInForm.elements;
+                field = Constants.DOMLookups.LogInForm.elements;
 
             for (var i = 0, len = field.length; i < len; i++) {
                 if (field[i].type !== "submit") {
@@ -367,12 +384,14 @@ var Quiz = function () {
 
         var writeUserWelcomeMessage = function (username) {
 
-            var paragraph = document.createElement("P"),
-                text = document.createTextNode(Constants.Messages.HELLO_MSG + ", " + username);
+            var doc = document;
+
+            var paragraph = doc.createElement("P"),
+                text = doc.createTextNode(Constants.Messages.HELLO_MSG + ", " + username);
 
             paragraph.appendChild(text);
 
-            var userMessageDiv = document.getElementsByClassName("userMessage")[0];
+            var userMessageDiv = doc.getElementsByClassName("userMessage")[0];
             userMessageDiv.appendChild(paragraph);
         };
 
@@ -385,26 +404,26 @@ var Quiz = function () {
             $(".logOutForm").show();
         };
 
-        var logInFormInputvaluesToDefault = function () {
-            logInForm.elements[0].value = "username";
-            logInForm.elements[1].value = "password";
+        var logInFormInputValuesToDefault = function () {
+            Constants.DOMLookups.LogInForm.elements[0].value = Constants.USERNAME;
+            Constants.DOMLookups.LogInForm.elements[1].value = "password";
         };
 
         var logInFormHasNoDefaultValues = function () {
-            return logInForm.elements[0].value !== "username";
+            return Constants.DOMLookups.LogInForm.elements[0].value !== Constants.USERNAME;
         };
 
         var loadLogInForm = function () {
 
             $(".logOutForm").hide();
 
-            logInFormInputvaluesToDefault();
+            logInFormInputValuesToDefault();
 
             $(".logInForm").show();
         };
 
         var noRememberIsChecked = function () {
-            var noRemember = logInForm.elements[2];
+            var noRemember = Constants.DOMLookups.LogInForm.elements[2];
             return noRemember.checked;
         };
 
@@ -453,14 +472,14 @@ var Quiz = function () {
 
                     nextQuestion();
 
-                    questionsForm.addEventListener("click", previousQuestionHandler, false);
-                    questionsForm.addEventListener("submit", nextQuestionHandler, false);
+                    Constants.DOMLookups.QuestionsForm.addEventListener("click", previousQuestionHandler, false);
+                    Constants.DOMLookups.QuestionsForm.addEventListener("submit", nextQuestionHandler, false);
 
-                    logInForm.addEventListener("submit", logInHandler, false);
-                    logInForm.addEventListener("click", defaultValueOff, false);
-                    logInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
+                    Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
+                    Constants.DOMLookups.LogInForm.addEventListener("click", defaultValueOff, false);
+                    Constants.DOMLookups.LogInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
 
-                    logOutForm.addEventListener("submit", logOutHandler, false);
+                    Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
                 });
             }
         };
