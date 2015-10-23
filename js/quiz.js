@@ -1,12 +1,13 @@
-var logInForm = document.getElementsByClassName("logInForm")[0],
+var Quiz = function () {
+    "use strict";
+
+    var logInForm = document.getElementsByClassName("logInForm")[0],
         logOutForm = document.getElementsByClassName("logOutForm")[0],
         questionDiv = document.getElementsByClassName("question")[0],
         questionsForm = document.getElementsByClassName("questionsForm")[0],
         choicesList = document.getElementsByClassName("choicesList")[0];
 
     var clearNodeChilds = function (node) {
-        "use strict";
-
         while (node.hasChildNodes()) {
             node.removeChild(node.lastChild);
         }
@@ -21,12 +22,11 @@ var logInForm = document.getElementsByClassName("logInForm")[0],
             FIRST_QUESTION: "This is the first question",
             SCORE_MSG: "Your final score is:",
             HELLO_MSG: "Hello"
-        }
+        },
+
     };
 
     function Question(obj) {
-        "use strict";
-
         this.question = [];
         this.choices = [];
         this.correctAnswer = -1;
@@ -40,25 +40,18 @@ var logInForm = document.getElementsByClassName("logInForm")[0],
     }
 
     Question.prototype.getQuestion = function () {
-        "use strict";
-
         return this.question;
     };
 
     Question.prototype.getChoices = function () {
-        "use strict";
-
         return this.choices;
     };
 
     Question.prototype.isCorrectChoice = function (choice) {
-        "use strict";
-
         return choice === this.correctAnswer;
     };
 
     var Questionnaire = function () {
-        "use strict";
 
         var fillChoices = function (choicesList, choices) {
 
@@ -107,35 +100,25 @@ var logInForm = document.getElementsByClassName("logInForm")[0],
     }();
 
     function Score() {
-        "use strict";
-
         this.score = 0;
     }
 
     Score.prototype.changeTitle = function () {
-        "use strict";
-
         var title = document.getElementsByClassName("title")[0].firstChild;
         title.text = "Score";
     };
 
     Score.prototype.increaseScore = function () {
-        "use strict";
-
         this.score++;
     };
 
     Score.prototype.decreaseScore = function () {
-        "use strict";
-
         if (this.score > 0) {
             this.score--;
         }
     };
 
     Score.prototype.showScore = function () {
-        "use strict";
-
 
         Score.prototype.changeTitle();
 
@@ -155,10 +138,7 @@ var logInForm = document.getElementsByClassName("logInForm")[0],
     };
 
 
-
     function QuestionsAndAnswers(jsonFile) {
-        "use strict";
-
 
         this.questions = [];
         this.currentQuestion = -1;
@@ -166,8 +146,6 @@ var logInForm = document.getElementsByClassName("logInForm")[0],
     }
 
     QuestionsAndAnswers.prototype.loadQuestions = function () {
-        "use strict";
-
         var that = this;
         return $.getJSON(that.jsonFile, function (data) {
             $.each(data, function (i) {
@@ -177,48 +155,34 @@ var logInForm = document.getElementsByClassName("logInForm")[0],
     };
 
     QuestionsAndAnswers.prototype.next = function () {
-        "use strict";
-
         this.currentQuestion++;
         return this.questions[this.currentQuestion];
     };
 
     QuestionsAndAnswers.prototype.previous = function () {
-        "use strict";
-
         this.currentQuestion--;
         return this.questions[this.currentQuestion];
 
     };
 
     QuestionsAndAnswers.prototype.noMoreQuestions = function () {
-        "use strict";
-
         return this.currentQuestion >= this.questions.length - 1;
     };
 
     QuestionsAndAnswers.prototype.index = function () {
-        "use strict";
-
         return this.currentQuestion;
     };
 
     QuestionsAndAnswers.prototype.isFirstQuestion = function () {
-        "use strict";
-
         return this.currentQuestion === 0;
     };
 
     QuestionsAndAnswers.prototype.isCorrectChoice = function (choice) {
-        "use strict";
-
         return this.questions[this.currentQuestion].isCorrectChoice(choice);
     };
 
 
     var Log = function () {
-        "use strict";
-
         var logged = false;
 
         return {
@@ -262,8 +226,6 @@ var logInForm = document.getElementsByClassName("logInForm")[0],
     }();
 
     var Application = function () {
-        "use strict";
-
         var questions = new QuestionsAndAnswers(Constants.JSON_FILE),
             userAnswers = [],
             score = new Score();
@@ -308,203 +270,211 @@ var logInForm = document.getElementsByClassName("logInForm")[0],
             }
         };
 
-            var previousQuestion = function () {
-                Questionnaire.fillQuestionnaire(questions.previous.call(questions));
-                Questionnaire.setUserAnswer(getUserAnswer());
-            };
+        var previousQuestion = function () {
+            Questionnaire.fillQuestionnaire(questions.previous.call(questions));
+            Questionnaire.setUserAnswer(getUserAnswer());
+        };
 
-            var nextQuestionHandler = function (event) {
+        var nextQuestionHandler = function (event) {
 
-                event.preventDefault();
+            event.preventDefault();
 
-                var choiceChecked = getChoiceChecked(questionsForm);
+            var choiceChecked = getChoiceChecked(questionsForm);
 
-                if (choiceChecked >= 0) {
+            if (choiceChecked >= 0) {
 
-                    saveUserAnswer(choiceChecked);
+                saveUserAnswer(choiceChecked);
 
-                    if (questions.isCorrectChoice.call(questions, choiceChecked)) {
-                        score.increaseScore();
-                    }
+                if (questions.isCorrectChoice.call(questions, choiceChecked)) {
+                    score.increaseScore();
+                }
 
-                    if (!questions.noMoreQuestions.call(questions)) {
+                if (!questions.noMoreQuestions.call(questions)) {
 
-                        var QA = $(".QA");
+                    var QA = $(".QA");
 
-                        QA.fadeTo("fast", 0, nextQuestion);
+                    QA.fadeTo("fast", 0, nextQuestion);
 
-                        QA.fadeTo("fast", 1);
-                    }
-                    else {
-                        score.showScore();
-                    }
+                    QA.fadeTo("fast", 1);
                 }
                 else {
-                    window.alert(Constants.Messages.PICK_CHOICE_MSG);
+                    score.showScore();
                 }
-            };
+            }
+            else {
+                window.alert(Constants.Messages.PICK_CHOICE_MSG);
+            }
+        };
 
-            var previousQuestionHandler = function (event) {
+        var previousQuestionHandler = function (event) {
 
-                var target = event.target;
+            var target = event.target;
 
-                if (target.className === "backBtn") {
+            if (target.className === "backBtn") {
 
-                    if (!questions.isFirstQuestion.call(questions)) {
+                if (!questions.isFirstQuestion.call(questions)) {
 
-                        var QA = $(".QA");
+                    var QA = $(".QA");
 
-                        QA.fadeTo("fast", 0, previousQuestion);
+                    QA.fadeTo("fast", 0, previousQuestion);
 
-                        QA.fadeTo("fast", 1);
+                    QA.fadeTo("fast", 1);
 
-                        score.decreaseScore();
+                    score.decreaseScore();
+                }
+                else {
+                    window.alert(Constants.Messages.FIRST_QUESTION);
+                }
+            }
+        };
+
+        var defaultValueOff = function (event) {
+
+            var target = event.target;
+
+            if (target.className === "username" || target.className === "password") {
+                target.value = "";
+            }
+        };
+
+        var defaultValueOnIfNoValue = function (event) {
+
+            var target = event.target;
+
+            if (target.value === "") {
+
+                if (target.className === "username") {
+                    target.value = "username";
+                }
+                else if (target.className === "password") {
+                    target.value = "password";
+                }
+            }
+        };
+
+        var getUsernameAndPassword = function () {
+
+            var info = [],
+                field = logInForm.elements;
+
+            for (var i = 0, len = field.length; i < len; i++) {
+                if (field[i].type !== "submit") {
+                    info[info.length] = field[i].value;
+                }
+            }
+            return info;
+        };
+
+        var writeUserWelcomeMessage = function (username) {
+
+            var paragraph = document.createElement("P"),
+                text = document.createTextNode(Constants.Messages.HELLO_MSG + ", " + username);
+
+            paragraph.appendChild(text);
+
+            var userMessageDiv = document.getElementsByClassName("userMessage")[0];
+            userMessageDiv.appendChild(paragraph);
+        };
+
+        var loadLogOutForm = function (username) {
+
+            $(".logInForm").hide();
+
+            writeUserWelcomeMessage(username);
+
+            $(".logOutForm").show();
+        };
+
+        var logInFormInputvaluesToDefault = function () {
+            logInForm.elements[0].value = "username";
+            logInForm.elements[1].value = "password";
+        };
+
+        var logInFormHasNoDefaultValues = function () {
+            return logInForm.elements[0].value !== "username";
+        };
+
+        var loadLogInForm = function () {
+
+            $(".logOutForm").hide();
+
+            logInFormInputvaluesToDefault();
+
+            $(".logInForm").show();
+        };
+
+        var noRememberIsChecked = function () {
+            var noRemember = logInForm.elements[2];
+            return noRemember.checked;
+        };
+
+        var logInHandler = function (event) {
+
+            event.preventDefault();
+
+            if (!Log.isUserLoggedIn() && logInFormHasNoDefaultValues()) {
+
+                var userInfo = getUsernameAndPassword();
+
+                Log.logIn.apply(this, userInfo);
+                var username = userInfo[0];
+
+                if (noRememberIsChecked()) {
+                    window.addEventListener("unload", function () {
+                        Log.deleteUsers();
+                    }, false);
+                }
+
+                loadLogOutForm(username);
+            }
+        };
+
+        var logOutHandler = function (event) {
+
+            event.preventDefault();
+
+            Log.logOut();
+
+            var userMessageDiv = document.getElementsByClassName("userMessage")[0];
+            clearNodeChilds(userMessageDiv);
+
+            loadLogInForm();
+        };
+
+        return {
+            startApplication: function () {
+
+                questions.loadQuestions().done(function () {
+
+                    if (Log.userAlreadyExists()) {
+                        var username = Log.logExistingUser();
+                        loadLogOutForm(username);
                     }
-                    else {
-                        window.alert(Constants.Messages.FIRST_QUESTION);
-                    }
-                }
-            };
 
-            var defaultValueOff = function (event) {
+                    nextQuestion();
 
-                var target = event.target;
+                    questionsForm.addEventListener("click", previousQuestionHandler, false);
+                    questionsForm.addEventListener("submit", nextQuestionHandler, false);
 
-                if (target.className === "username" || target.className === "password") {
-                    target.value = "";
-                }
-            };
+                    logInForm.addEventListener("submit", logInHandler, false);
+                    logInForm.addEventListener("click", defaultValueOff, false);
+                    logInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
 
-            var defaultValueOnIfNoValue = function (event) {
+                    logOutForm.addEventListener("submit", logOutHandler, false);
+                });
+            }
+        };
+    }();
 
-                var target = event.target;
+    return {
+        startQuiz: function () {
+            Application.startApplication();
+        }
+    };
+}();
 
-                if (target.value === "") {
-
-                    if (target.className === "username") {
-                        target.value = "username";
-                    }
-                    else if (target.className === "password") {
-                        target.value = "password";
-                    }
-                }
-            };
-
-            var getUsernameAndPassword = function () {
-
-                var info = [],
-                    field = logInForm.elements;
-
-                for (var i = 0, len = field.length; i < len; i++) {
-                    if (field[i].type !== "submit") {
-                        info[info.length] = field[i].value;
-                    }
-                }
-                return info;
-            };
-
-            var writeUserWelcomeMessage = function (username) {
-
-                var paragraph = document.createElement("P"),
-                    text = document.createTextNode(Constants.Messages.HELLO_MSG + ", " + username);
-
-                paragraph.appendChild(text);
-
-                var userMessageDiv = document.getElementsByClassName("userMessage")[0];
-                userMessageDiv.appendChild(paragraph);
-            };
-
-            var loadLogOutForm = function (username) {
-
-                $(".logInForm").hide();
-
-                writeUserWelcomeMessage(username);
-
-                $(".logOutForm").show();
-            };
-
-            var logInFormInputvaluesToDefault = function () {
-                logInForm.elements[0].value = "username";
-                logInForm.elements[1].value = "password";
-            };
-
-            var logInFormHasNoDefaultValues = function () {
-                return logInForm.elements[0].value !== "username";
-            };
-
-            var loadLogInForm = function () {
-
-                $(".logOutForm").hide();
-
-                logInFormInputvaluesToDefault();
-
-                $(".logInForm").show();
-            };
-
-            var noRememberIsChecked = function () {
-                var noRemember = logInForm.elements[2];
-                return noRemember.checked;
-            };
-
-            var logInHandler = function (event) {
-
-                event.preventDefault();
-
-                if (!Log.isUserLoggedIn() && logInFormHasNoDefaultValues()) {
-
-                    var userInfo = getUsernameAndPassword();
-
-                    Log.logIn.apply(this, userInfo);
-                    var username = userInfo[0];
-
-                    if (noRememberIsChecked()) {
-                        window.addEventListener("unload", function () {
-                            Log.deleteUsers();
-                        }, false);
-                    }
-
-                    loadLogOutForm(username);
-                }
-            };
-
-            var logOutHandler = function (event) {
-
-                event.preventDefault();
-
-                Log.logOut();
-
-                var userMessageDiv = document.getElementsByClassName("userMessage")[0];
-                clearNodeChilds(userMessageDiv);
-
-                loadLogInForm();
-            };
-
-            return {
-                startApplication: function () {
-
-                    questions.loadQuestions().done(function () {
-
-                        if (Log.userAlreadyExists()) {
-                            var username = Log.logExistingUser();
-                            loadLogOutForm(username);
-                        }
-
-                        nextQuestion();
-
-                        questionsForm.addEventListener("click", previousQuestionHandler, false);
-                        questionsForm.addEventListener("submit", nextQuestionHandler, false);
-
-                        logInForm.addEventListener("submit", logInHandler, false);
-                        logInForm.addEventListener("click", defaultValueOff, false);
-                        logInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
-
-                        logOutForm.addEventListener("submit", logOutHandler, false);
-                    });
-                }
-            };
-        }();
+Quiz.startQuiz();
 
 
-Application.startApplication();
 
 
