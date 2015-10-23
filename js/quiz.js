@@ -1,7 +1,6 @@
 var Quiz = function () {
     "use strict";
 
-
     var Constants = {
         SCORE_TITLE: "Score",
         USERNAME: "username",
@@ -243,6 +242,7 @@ var Quiz = function () {
     }();
 
     var Application = function () {
+
         var questions = new QuestionsAndAnswers(Constants.JSON_FILE),
             userAnswers = [],
             score = new Score();
@@ -280,7 +280,7 @@ var Quiz = function () {
 
         var nextQuestion = function () {
 
-            Questionnaire.fillQuestionnaire(questions.next.call(questions));
+            Questionnaire.fillQuestionnaire(questions.next());
 
             if (userPreviouslyAnswered()) {
                 Questionnaire.setUserAnswer(getUserAnswer());
@@ -288,13 +288,11 @@ var Quiz = function () {
         };
 
         var previousQuestion = function () {
-            Questionnaire.fillQuestionnaire(questions.previous.call(questions));
+            Questionnaire.fillQuestionnaire(questions.previous());
             Questionnaire.setUserAnswer(getUserAnswer());
         };
 
-        var nextQuestionHandler = function (event) {
-
-            event.preventDefault();
+        var goToNextQuestion = function () {
 
             var choiceChecked = getChoiceChecked(Constants.DOMLookups.QuestionsForm);
 
@@ -302,11 +300,11 @@ var Quiz = function () {
 
                 saveUserAnswer(choiceChecked);
 
-                if (questions.isCorrectChoice.call(questions, choiceChecked)) {
+                if (questions.isCorrectChoice(choiceChecked)) {
                     score.increaseScore();
                 }
 
-                if (!questions.noMoreQuestions.call(questions)) {
+                if (!questions.noMoreQuestions()) {
 
                     var QA = $(".QA");
 
@@ -323,25 +321,20 @@ var Quiz = function () {
             }
         };
 
-        var previousQuestionHandler = function (event) {
+        var goToPreviousQuestion = function () {
 
-            var target = event.target;
+            if (!questions.isFirstQuestion()) {
 
-            if (target.className === "backBtn") {
+                var QA = $(".QA");
 
-                if (!questions.isFirstQuestion.call(questions)) {
+                QA.fadeTo("fast", 0, previousQuestion);
 
-                    var QA = $(".QA");
+                QA.fadeTo("fast", 1);
 
-                    QA.fadeTo("fast", 0, previousQuestion);
-
-                    QA.fadeTo("fast", 1);
-
-                    score.decreaseScore();
-                }
-                else {
-                    window.alert(Constants.Messages.FIRST_QUESTION);
-                }
+                score.decreaseScore();
+            }
+            else {
+                window.alert(Constants.Messages.FIRST_QUESTION);
             }
         };
 
@@ -427,15 +420,13 @@ var Quiz = function () {
             return noRemember.checked;
         };
 
-        var logInHandler = function (event) {
-
-            event.preventDefault();
+        var LogInUser = function () {
 
             if (!Log.isUserLoggedIn() && logInFormHasNoDefaultValues()) {
 
                 var userInfo = getUsernameAndPassword();
 
-                Log.logIn.apply(this, userInfo);
+                Log.logIn.apply(null, userInfo);
                 var username = userInfo[0];
 
                 if (noRememberIsChecked()) {
@@ -448,9 +439,7 @@ var Quiz = function () {
             }
         };
 
-        var logOutHandler = function (event) {
-
-            event.preventDefault();
+        var logOutUser = function () {
 
             Log.logOut();
 
@@ -458,6 +447,37 @@ var Quiz = function () {
             clearNodeChilds(userMessageDiv);
 
             loadLogInForm();
+        };
+
+
+        var logInHandler = function (event) {
+
+            event.preventDefault();
+
+            LogInUser();
+        };
+
+        var logOutHandler = function (event) {
+
+            event.preventDefault();
+
+            logOutUser();
+        };
+
+        var previousQuestionHandler = function (event) {
+
+            var target = event.target;
+
+            if (target.className === "backBtn") {
+                goToPreviousQuestion();
+            }
+        };
+
+        var nextQuestionHandler = function (event) {
+
+            event.preventDefault();
+
+            goToNextQuestion();
         };
 
         return {
