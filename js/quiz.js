@@ -1,13 +1,11 @@
-var Quiz = function () {
-    "use strict";
-
-    var logInForm = document.getElementsByClassName("logInForm")[0],
+var logInForm = document.getElementsByClassName("logInForm")[0],
         logOutForm = document.getElementsByClassName("logOutForm")[0],
         questionDiv = document.getElementsByClassName("question")[0],
         questionsForm = document.getElementsByClassName("questionsForm")[0],
         choicesList = document.getElementsByClassName("choicesList")[0];
 
     var clearNodeChilds = function (node) {
+        "use strict";
 
         while (node.hasChildNodes()) {
             node.removeChild(node.lastChild);
@@ -27,32 +25,40 @@ var Quiz = function () {
     };
 
     function Question(obj) {
+        "use strict";
 
-        var question,
-            choices,
-            correctAnswer;
+        this.question = [];
+        this.choices = [];
+        this.correctAnswer = -1;
 
         if (obj !== null) {
 
-            question = obj.question;
-            choices = obj.choices;
-            correctAnswer = obj.correctAnswer;
+            this.question = obj.question;
+            this.choices = obj.choices;
+            this.correctAnswer = obj.correctAnswer;
         }
-
-        this.getQuestion = function () {
-            return question;
-        };
-
-        this.getChoices = function () {
-            return choices;
-        };
-
-        this.isCorrectChoice = function (choice) {
-            return choice === correctAnswer;
-        };
     }
 
+    Question.prototype.getQuestion = function () {
+        "use strict";
+
+        return this.question;
+    };
+
+    Question.prototype.getChoices = function () {
+        "use strict";
+
+        return this.choices;
+    };
+
+    Question.prototype.isCorrectChoice = function (choice) {
+        "use strict";
+
+        return choice === this.correctAnswer;
+    };
+
     var Questionnaire = function () {
+        "use strict";
 
         var fillChoices = function (choicesList, choices) {
 
@@ -73,7 +79,6 @@ var Quiz = function () {
         };
 
         var fillQuestion = function (text) {
-
             var label = document.createElement("LABEL"),
                 questionText = document.createTextNode(text);
 
@@ -102,89 +107,117 @@ var Quiz = function () {
     }();
 
     function Score() {
-        var score = 0;
+        "use strict";
 
-        var changeTitle = function () {
-
-            var title = document.getElementsByClassName("title")[0].firstChild;
-            title.text = "Score";
-        };
-
-
-        this.increaseScore = function () {
-            score++;
-        };
-
-        this.decreaseScore = function () {
-            if (score > 0) {
-                score--;
-            }
-        };
-
-        this.showScore = function () {
-
-            changeTitle();
-
-            questionsForm.onsubmit = null;
-            var main = document.getElementsByClassName("questionnarie")[0];
-            clearNodeChilds(main);
-
-            var scoreMsg = Constants.Messages.SCORE_MSG + " " + score;
-
-            var h3 = document.createElement("H3");
-            h3.className = "score";
-
-            var text = document.createTextNode(scoreMsg);
-
-            h3.appendChild(text);
-            main.appendChild(h3);
-        };
+        this.score = 0;
     }
+
+    Score.prototype.changeTitle = function () {
+        "use strict";
+
+        var title = document.getElementsByClassName("title")[0].firstChild;
+        title.text = "Score";
+    };
+
+    Score.prototype.increaseScore = function () {
+        "use strict";
+
+        this.score++;
+    };
+
+    Score.prototype.decreaseScore = function () {
+        "use strict";
+
+        if (this.score > 0) {
+            this.score--;
+        }
+    };
+
+    Score.prototype.showScore = function () {
+        "use strict";
+
+
+        Score.prototype.changeTitle();
+
+        questionsForm.onsubmit = null;
+        var main = document.getElementsByClassName("questionnarie")[0];
+        clearNodeChilds(main);
+
+        var scoreMsg = Constants.Messages.SCORE_MSG + " " + this.score;
+
+        var h3 = document.createElement("H3");
+        h3.className = "score";
+
+        var text = document.createTextNode(scoreMsg);
+
+        h3.appendChild(text);
+        main.appendChild(h3);
+    };
+
+
 
     function QuestionsAndAnswers(jsonFile) {
+        "use strict";
 
-        var questions = [],
-            currentQuestion = -1;
 
-        this.loadQuestions = function () {
-
-            return $.getJSON(jsonFile, function (data) {
-
-                $.each(data, function (i) {
-                    questions[questions.length] = new Question(data[i]);
-                });
-            });
-        }();
-
-        this.next = function () {
-            currentQuestion++;
-            return questions[currentQuestion];
-        };
-
-        this.previous = function () {
-            currentQuestion--;
-            return questions[currentQuestion];
-
-        };
-
-        this.noMoreQuestions = function () {
-            return currentQuestion >= questions.length - 1;
-        };
-
-        this.index = function () {
-            return currentQuestion;
-        };
-
-        this.isFirstQuestion = function () {
-            return currentQuestion === 0;
-        };
-
-        this.isCorrectChoice = function (choice) {
-            return questions[currentQuestion].isCorrectChoice(choice);
-        };
+        this.questions = [];
+        this.currentQuestion = -1;
+        this.jsonFile = jsonFile;
     }
 
+    QuestionsAndAnswers.prototype.loadQuestions = function () {
+        "use strict";
+
+        var that = this;
+        return $.getJSON(that.jsonFile, function (data) {
+            $.each(data, function (i) {
+                that.questions[that.questions.length] = new Question(data[i]);
+            });
+        });
+    };
+
+    QuestionsAndAnswers.prototype.next = function () {
+        "use strict";
+
+        this.currentQuestion++;
+        return this.questions[this.currentQuestion];
+    };
+
+    QuestionsAndAnswers.prototype.previous = function () {
+        "use strict";
+
+        this.currentQuestion--;
+        return this.questions[this.currentQuestion];
+
+    };
+
+    QuestionsAndAnswers.prototype.noMoreQuestions = function () {
+        "use strict";
+
+        return this.currentQuestion >= this.questions.length - 1;
+    };
+
+    QuestionsAndAnswers.prototype.index = function () {
+        "use strict";
+
+        return this.currentQuestion;
+    };
+
+    QuestionsAndAnswers.prototype.isFirstQuestion = function () {
+        "use strict";
+
+        return this.currentQuestion === 0;
+    };
+
+    QuestionsAndAnswers.prototype.isCorrectChoice = function (choice) {
+        "use strict";
+
+        return this.questions[this.currentQuestion].isCorrectChoice(choice);
+    };
+
+
     var Log = function () {
+        "use strict";
 
         var logged = false;
 
@@ -194,10 +227,6 @@ var Quiz = function () {
 
                 var user = localStorage.getItem(Constants.USERNAME);
                 if (user === username) {
-                    logged = true;
-                    localStorage.setItem(Constants.USERNAME, username);
-                    localStorage.setItem(username, password);
-
                     logged = true;
                 }
                 else {
@@ -210,6 +239,7 @@ var Quiz = function () {
 
             logOut: function () {
                 logged = false;
+                localStorage.clear();
             },
 
             isUserLoggedIn: function () {
@@ -232,6 +262,7 @@ var Quiz = function () {
     }();
 
     var Application = function () {
+        "use strict";
 
         var questions = new QuestionsAndAnswers(Constants.JSON_FILE),
             userAnswers = [],
@@ -270,7 +301,7 @@ var Quiz = function () {
 
         var nextQuestion = function () {
 
-            Questionnaire.fillQuestionnaire(questions.next());
+            Questionnaire.fillQuestionnaire(questions.next.call(questions));
 
             if (userPreviouslyAnswered()) {
                 Questionnaire.setUserAnswer(getUserAnswer());
@@ -278,7 +309,7 @@ var Quiz = function () {
         };
 
             var previousQuestion = function () {
-                Questionnaire.fillQuestionnaire(questions.previous());
+                Questionnaire.fillQuestionnaire(questions.previous.call(questions));
                 Questionnaire.setUserAnswer(getUserAnswer());
             };
 
@@ -292,11 +323,11 @@ var Quiz = function () {
 
                     saveUserAnswer(choiceChecked);
 
-                    if (questions.isCorrectChoice(choiceChecked)) {
+                    if (questions.isCorrectChoice.call(questions, choiceChecked)) {
                         score.increaseScore();
                     }
 
-                    if (!questions.noMoreQuestions()) {
+                    if (!questions.noMoreQuestions.call(questions)) {
 
                         var QA = $(".QA");
 
@@ -319,7 +350,7 @@ var Quiz = function () {
 
                 if (target.className === "backBtn") {
 
-                    if (!questions.isFirstQuestion()) {
+                    if (!questions.isFirstQuestion.call(questions)) {
 
                         var QA = $(".QA");
 
@@ -451,7 +482,7 @@ var Quiz = function () {
             return {
                 startApplication: function () {
 
-                    questions.loadQuestions.done(function () {
+                    questions.loadQuestions().done(function () {
 
                         if (Log.userAlreadyExists()) {
                             var username = Log.logExistingUser();
@@ -473,13 +504,7 @@ var Quiz = function () {
             };
         }();
 
-    return {
-        RunQuiz: function() {
-            Application.startApplication();
-        }
-    };
-}();
 
-Quiz.RunQuiz();
+Application.startApplication();
 
 
