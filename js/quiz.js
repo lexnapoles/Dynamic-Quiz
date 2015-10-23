@@ -29,12 +29,6 @@ var Quiz = function () {
         }()
     };
 
-    var clearNodeChilds = function (node) {
-        while (node.hasChildNodes()) {
-            node.removeChild(node.lastChild);
-        }
-    };
-
     function Question(obj) {
         this.question = [];
         this.choices = [];
@@ -64,41 +58,24 @@ var Quiz = function () {
 
         var fillChoices = function (choicesList, choices) {
 
-            var doc = document;
+            var html = "";
 
-            for (var i = 0; i < choices.length; i++) {
-
-                var li = doc.createElement("LI"),
-                    input = doc.createElement("INPUT");
-
-                input.type = "radio";
-                input.name = "choice";
-
-                li.appendChild(input);
-
-                var text = doc.createTextNode(choices[i]);
-                li.appendChild(text);
-                choicesList.appendChild(li);
+            for (var i = 0, len = choices.length; i < len; i++) {
+                html += "<li><input type='radio' name='choice'>" + choices[i] + "</li>";
             }
+
+            choicesList.innerHTML = html;
         };
 
         var fillQuestion = function (text) {
 
-            var doc = document;
+            var html = "<label>" + text + "</label>";
 
-            var label = doc.createElement("LABEL"),
-                questionText = doc.createTextNode(text);
-
-            label.appendChild(questionText);
-
-            Constants.DOMLookups.QuestionDiv.appendChild(label);
+            Constants.DOMLookups.QuestionDiv.innerHTML = html;
         };
 
         return {
             fillQuestionnaire: function (question) {
-
-                clearNodeChilds(Constants.DOMLookups.QuestionDiv);
-                clearNodeChilds(Constants.DOMLookups.ChoicesList);
 
                 fillQuestion(question.getQuestion());
                 fillChoices(Constants.DOMLookups.ChoicesList, question.getChoices());
@@ -136,23 +113,15 @@ var Quiz = function () {
 
         Score.prototype.changeTitle();
 
-        var doc = document;
+        var main = document.getElementsByClassName("questionnarie")[0],
+            scoreMsg = Constants.Messages.SCORE_MSG + " " + this.score,
+            html = "<h3 class='score'>" + scoreMsg + "</h3>";
 
         Constants.DOMLookups.QuestionsForm.onsubmit = null;
-        var main = doc.getElementsByClassName("questionnarie")[0];
-        clearNodeChilds(main);
+        Constants.DOMLookups.QuestionsForm.onclick = null;
 
-        var scoreMsg = Constants.Messages.SCORE_MSG + " " + this.score;
-
-        var h3 = doc.createElement("H3");
-        h3.className = "score";
-
-        var text = doc.createTextNode(scoreMsg);
-
-        h3.appendChild(text);
-        main.appendChild(h3);
+        main.innerHTML = html;
     };
-
 
     function QuestionsAndAnswers(jsonFile) {
 
@@ -379,13 +348,10 @@ var Quiz = function () {
 
             var doc = document;
 
-            var paragraph = doc.createElement("P"),
-                text = doc.createTextNode(Constants.Messages.HELLO_MSG + ", " + username);
-
-            paragraph.appendChild(text);
+            var html = "<p>" + Constants.Messages.HELLO_MSG + ", " + username + "</p>";
 
             var userMessageDiv = doc.getElementsByClassName("userMessage")[0];
-            userMessageDiv.appendChild(paragraph);
+            userMessageDiv.innerHTML = html;
         };
 
         var loadLogOutForm = function (username) {
@@ -442,9 +408,6 @@ var Quiz = function () {
         var logOutUser = function () {
 
             Log.logOut();
-
-            var userMessageDiv = document.getElementsByClassName("userMessage")[0];
-            clearNodeChilds(userMessageDiv);
 
             loadLogInForm();
         };
