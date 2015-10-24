@@ -1,270 +1,482 @@
-var questionDiv  = document.getElementsByClassName("question")[0];
-var questionsForm = document.forms[0];
-var choicesList = document.getElementsByClassName("choicesList")[0];
-
-
-var clearNodeChilds = function(node) {
+var Quiz = function () {
     "use strict";
 
-    while(node.hasChildNodes()) {
-        node.removeChild(node.lastChild);
-    }
-};
-
-function Question() {
-    "use strict";
-
-    var question;
-    var choices;
-    var correctChoice;
-
-    this.getQuestion = function () {
-        return question;
-    };
-
-    this.getChoices = function () {
-        return choices;
-    };
-
-    this.setQuestion = function(value) {
-        question = value;
-    };
-
-    this.setChoices = function(values) {
-        choices = values;
-    };
-
-    this.setCorrectChoice = function(value) {
-        correctChoice = value;
-    };
-
-    this.isCorrectChoice = function (choice) {
-        return choice === correctChoice;
-    };
-}
-
-var Questionnaire = function() {
-    "use strict";
-
-    var fillChoices = function(choicesList, choices) {
-
-        for(var i = 0; i < choices.length; i++) {
-
-            var li = document.createElement("LI");
-            var input = document.createElement("INPUT");
-            input.type = "radio";
-            input.name = "choice";
-
-            li.appendChild(input);
-
-            var text = document.createTextNode(choices[i]);
-            li.appendChild(text);
-            choicesList.appendChild(li);
-        }
-    };
-
-    var fillQuestion = function(text) {
-
-        var label = document.createElement("LABEL");
-
-        var questionText = document.createTextNode(text);
-        label.appendChild(questionText);
-
-
-        questionDiv.appendChild(label);
-    };
-
-
-
-    return {
-        fillQuestionnaire: function(question) {
-
-            clearNodeChilds(questionDiv);
-            clearNodeChilds(choicesList);
-
-            fillQuestion(question.getQuestion());
-            fillChoices(choicesList, question.getChoices());
+    var Constants = {
+        SCORE_TITLE: "Score",
+        USERNAME: "username",
+        JSON_FILE: "Q&A.json",
+        Messages: {
+            PICK_CHOICE_MSG: "To proceed further, please pick a choice",
+            FIRST_QUESTION: "This is the first question",
+            SCORE_MSG: "Your final score is:",
+            HELLO_MSG: "Hello"
         },
+        DOMLookups: function () {
+            var doc = document;
+            var logInForm = doc.getElementsByClassName("logInForm")[0],
+                logOutForm = doc.getElementsByClassName("logOutForm")[0],
+                questionDiv = doc.getElementsByClassName("question")[0],
+                questionsForm = doc.getElementsByClassName("questionsForm")[0],
+                choicesList = doc.getElementsByClassName("choicesList")[0];
 
-        setUserAnswer: function(answer) {
-
-            if(answer < questionsForm.elements.length)
-            {
-                questionsForm.elements[answer].checked = true;
-            }
-        }
+            return {
+                LogInForm: logInForm,
+                LogOutForm: logOutForm,
+                QuestionDiv: questionDiv,
+                QuestionsForm: questionsForm,
+                ChoicesList: choicesList
+            };
+        }()
     };
-}();
 
-function Score() {
-    "use strict";
-    var score = 0;
+    function Question(obj) {
+        this.question = [];
+        this.choices = [];
+        this.correctAnswer = -1;
 
-    var changeTitle = function() {
+        if (obj !== null) {
 
+            this.question = obj.question;
+            this.choices = obj.choices;
+            this.correctAnswer = obj.correctAnswer;
+        }
+    }
+
+    Question.prototype.getQuestion = function () {
+        return this.question;
+    };
+
+    Question.prototype.getChoices = function () {
+        return this.choices;
+    };
+
+    Question.prototype.isCorrectChoice = function (choice) {
+        return choice === this.correctAnswer;
+    };
+
+    var Questionnaire = function () {
+
+        var fillChoices = function (choicesList, choices) {
+
+            var html = "";
+
+            for (var i = 0, len = choices.length; i < len; i++) {
+                html += "<li><input type='radio' name='choice'>" + choices[i] + "</li>";
+            }
+
+            choicesList.innerHTML = html;
+        };
+
+        var fillQuestion = function (text) {
+
+            var html = "<label>" + text + "</label>";
+
+            Constants.DOMLookups.QuestionDiv.innerHTML = html;
+        };
+
+        return {
+            fillQuestionnaire: function (question) {
+
+                fillQuestion(question.getQuestion());
+                fillChoices(Constants.DOMLookups.ChoicesList, question.getChoices());
+            },
+
+            setUserAnswer: function (answer) {
+
+                if (answer < Constants.DOMLookups.QuestionsForm.elements.length) {
+                    Constants.DOMLookups.QuestionsForm.elements[answer].checked = true;
+                }
+            }
+        };
+    }();
+
+    function Score() {
+        this.score = 0;
+    }
+
+    Score.prototype.changeTitle = function () {
         var title = document.getElementsByClassName("title")[0].firstChild;
         title.text = "Score";
     };
 
-
-    this.increaseScore = function() {
-        score++;
+    Score.prototype.increaseScore = function () {
+        this.score++;
     };
 
-    this.decreaseScore = function() {
-        if(score > 0) {
-            score--;
+    Score.prototype.decreaseScore = function () {
+        if (this.score > 0) {
+            this.score--;
         }
     };
 
-    this.showScore = function() {
+    Score.prototype.showScore = function () {
 
-        changeTitle();
+        Score.prototype.changeTitle();
 
-        questionsForm.onsubmit = null;
-        var main = document.getElementsByClassName("questionnarie")[0];
-        clearNodeChilds(main);
+        var main = document.getElementsByClassName("questionnarie")[0],
+            scoreMsg = Constants.Messages.SCORE_MSG + " " + this.score,
+            html = "<h3 class='score'>" + scoreMsg + "</h3>";
 
-        var scoreMsg = "Your final score is: " + score;
+        Constants.DOMLookups.QuestionsForm.onsubmit = null;
+        Constants.DOMLookups.QuestionsForm.onclick = null;
 
-        var h3 = document.createElement("H3");
-        h3.className = "score";
-
-        var text = document.createTextNode(scoreMsg);
-
-        h3.appendChild(text);
-        main.appendChild(h3);
-};
-}
-
-
-var Application = function() {
-    "use strict";
-
-    var allQuestions = ["What is the capital of Spain?","How many sides has an hexagon?", "What is the heaviest creature on Earth?"];
-
-    var choicesForQuestions = [ ["Barcelona", "Sevilla", "Madrid", "Coimbra","Sri Lanka"],
-                                [2,7, 340, 6, 10],
-                                ["Eagle","Lion", "You", "Doberman", "Blue whale"] ];
-
-    var correctAnswerForQuestions = [2,3,4];
-
-    var userAnswers = [];
-
-    var question = new Question();
-
-    var score = new Score();
-
-    var currentQuestion = 0;
-
-    var getCurrentQuestion = function() {
-
-        question.setQuestion(allQuestions[currentQuestion]);
-        question.setChoices(choicesForQuestions[currentQuestion]);
-        question.setCorrectChoice(correctAnswerForQuestions[currentQuestion]);
-
-        return question;
+        main.innerHTML = html;
     };
 
-    var getChoiceChecked = function(form) {
+    function QuestionsAndAnswers(jsonFile) {
 
-        var choices = form.elements;
+        this.questions = [];
+        this.currentQuestion = -1;
+        this.jsonFile = jsonFile;
+    }
 
-        for(var i = 0, len = choices.length; i < len; i++) {
+    QuestionsAndAnswers.prototype.loadQuestions = function () {
+        var that = this;
+        return $.getJSON(that.jsonFile, function (data) {
+            $.each(data, function (i) {
+                that.questions[that.questions.length] = new Question(data[i]);
+            });
+        });
+    };
 
-            if(choices[i].checked) {
+    QuestionsAndAnswers.prototype.next = function () {
+        this.currentQuestion++;
+        return this.questions[this.currentQuestion];
+    };
 
-                return i;
+    QuestionsAndAnswers.prototype.previous = function () {
+        this.currentQuestion--;
+        return this.questions[this.currentQuestion];
+
+    };
+
+    QuestionsAndAnswers.prototype.noMoreQuestions = function () {
+        return this.currentQuestion >= this.questions.length - 1;
+    };
+
+    QuestionsAndAnswers.prototype.index = function () {
+        return this.currentQuestion;
+    };
+
+    QuestionsAndAnswers.prototype.isFirstQuestion = function () {
+        return this.currentQuestion === 0;
+    };
+
+    QuestionsAndAnswers.prototype.isCorrectChoice = function (choice) {
+        return this.questions[this.currentQuestion].isCorrectChoice(choice);
+    };
+
+
+    var Log = function () {
+        var logged = false;
+
+        return {
+
+            logIn: function (username, password) {
+
+                var user = localStorage.getItem(Constants.USERNAME);
+                if (user === username) {
+                    logged = true;
+                }
+                else {
+                    localStorage.setItem(Constants.USERNAME, username);
+                    localStorage.setItem(username, password);
+
+                    logged = true;
+                }
+            },
+
+            logOut: function () {
+                logged = false;
+                localStorage.clear();
+            },
+
+            isUserLoggedIn: function () {
+                return logged;
+            },
+
+            userAlreadyExists: function () {
+                return localStorage.length;
+            },
+
+            logExistingUser: function () {
+                logged = true;
+                return localStorage.getItem(Constants.USERNAME);
+            },
+
+            deleteUsers: function () {
+                localStorage.clear();
             }
-        }
-        return -1;
-    };
+        };
+    }();
 
-    var saveUserAnswer = function(answer) {
-        if(userAnswers.length > 0) {
-            userAnswers[currentQuestion] = answer;
-        }
-        else {
-            userAnswers[userAnswers.length] = answer;
-        }
-    };
+    var Application = function () {
 
-    var getCurrentUserAnswer = function() {
-        return userAnswers[currentQuestion];
-    };
+        var questions = new QuestionsAndAnswers(Constants.JSON_FILE),
+            userAnswers = [],
+            score = new Score();
 
-    var nextQuestionHandler = function(event) {
+        var getChoiceChecked = function (form) {
 
-        event.preventDefault();
+            var choices = form.elements;
 
-        var choiceChecked = getChoiceChecked(questionsForm);
+            for (var i = 0, len = choices.length; i < len; i++) {
 
-        if (choiceChecked >= 0) {
+                if (choices[i].checked) {
 
-            saveUserAnswer(choiceChecked);
-
-            if (question.isCorrectChoice(choiceChecked)) {
-                score.increaseScore();
+                    return i;
+                }
             }
+            return -1;
+        };
 
-            currentQuestion++;
-            if (currentQuestion < allQuestions.length) {
+        var userPreviouslyAnswered = function () {
+            return questions.index() < userAnswers.length;
+        };
 
-                $(".QA").fadeTo("fast", 0, function () {
-
-                    Questionnaire.fillQuestionnaire(getCurrentQuestion());
-                    Questionnaire.setUserAnswer(getCurrentUserAnswer());
-                });
-
-                $(".QA").fadeTo("fast", 1);
+        var saveUserAnswer = function (answer) {
+            if (userPreviouslyAnswered()) {
+                userAnswers[questions.index()] = answer;
             }
             else {
-                score.showScore();
+                userAnswers[userAnswers.length] = answer;
             }
-        }
-        else {
-            window.alert("To proceed further, please pick a choice");
-        }
-    };
+        };
 
-    var previousQuestionHandler = function(event) {
+        var getUserAnswer = function () {
+            return userAnswers[questions.index()];
+        };
 
-        var target = event.target;
+        var nextQuestion = function () {
 
-        if(target.className === "backBtn") {
+            Questionnaire.fillQuestionnaire(questions.next());
 
-            if (currentQuestion > 0) {
+            if (userPreviouslyAnswered()) {
+                Questionnaire.setUserAnswer(getUserAnswer());
+            }
+        };
 
-                currentQuestion--;
+        var previousQuestion = function () {
+            Questionnaire.fillQuestionnaire(questions.previous());
+            Questionnaire.setUserAnswer(getUserAnswer());
+        };
 
-                $(".QA").fadeTo("fast", 0, function () {
+        var goToNextQuestion = function () {
 
-                    Questionnaire.fillQuestionnaire(getCurrentQuestion());
-                    Questionnaire.setUserAnswer(getCurrentUserAnswer());
-                });
+            var choiceChecked = getChoiceChecked(Constants.DOMLookups.QuestionsForm);
 
-                $(".QA").fadeTo("fast", 1);
+            if (choiceChecked >= 0) {
+
+                saveUserAnswer(choiceChecked);
+
+                if (questions.isCorrectChoice(choiceChecked)) {
+                    score.increaseScore();
+                }
+
+                if (!questions.noMoreQuestions()) {
+
+                    var QA = $(".QA");
+
+                    QA.fadeTo("fast", 0, nextQuestion);
+
+                    QA.fadeTo("fast", 1);
+                }
+                else {
+                    score.showScore();
+                }
+            }
+            else {
+                window.alert(Constants.Messages.PICK_CHOICE_MSG);
+            }
+        };
+
+        var goToPreviousQuestion = function () {
+
+            if (!questions.isFirstQuestion()) {
+
+                var QA = $(".QA");
+
+                QA.fadeTo("fast", 0, previousQuestion);
+
+                QA.fadeTo("fast", 1);
 
                 score.decreaseScore();
             }
             else {
-                window.alert("This is the first question");
+                window.alert(Constants.Messages.FIRST_QUESTION);
             }
-        }
-    };
+        };
+
+        var defaultValueOff = function (event) {
+
+            var target = event.target;
+
+            if (target.className === Constants.USERNAME || target.className === "password") {
+                target.value = "";
+            }
+        };
+
+        var defaultValueOnIfNoValue = function (event) {
+
+            var target = event.target;
+
+            if (target.value === "") {
+
+                if (target.className === Constants.USERNAME) {
+                    target.value = Constants.USERNAME;
+                }
+                else if (target.className === "password") {
+                    target.value = "password";
+                }
+            }
+        };
+
+        var getUsernameAndPassword = function () {
+
+            var info = [],
+                field = Constants.DOMLookups.LogInForm.elements;
+
+            for (var i = 0, len = field.length; i < len; i++) {
+                if (field[i].type !== "submit") {
+                    info[info.length] = field[i].value;
+                }
+            }
+            return info;
+        };
+
+        var writeUserWelcomeMessage = function (username) {
+
+            var doc = document;
+
+            var html = "<p>" + Constants.Messages.HELLO_MSG + ", " + username + "</p>";
+
+            var userMessageDiv = doc.getElementsByClassName("userMessage")[0];
+            userMessageDiv.innerHTML = html;
+        };
+
+        var loadLogOutForm = function (username) {
+
+            $(".logInForm").hide();
+
+            writeUserWelcomeMessage(username);
+
+            $(".logOutForm").show();
+        };
+
+        var logInFormInputValuesToDefault = function () {
+            Constants.DOMLookups.LogInForm.elements[0].value = Constants.USERNAME;
+            Constants.DOMLookups.LogInForm.elements[1].value = "password";
+        };
+
+        var logInFormHasNoDefaultValues = function () {
+            return Constants.DOMLookups.LogInForm.elements[0].value !== Constants.USERNAME;
+        };
+
+        var loadLogInForm = function () {
+
+            $(".logOutForm").hide();
+
+            logInFormInputValuesToDefault();
+
+            $(".logInForm").show();
+        };
+
+        var noRememberIsChecked = function () {
+            var noRemember = Constants.DOMLookups.LogInForm.elements[2];
+            return noRemember.checked;
+        };
+
+        var LogInUser = function () {
+
+            if (!Log.isUserLoggedIn() && logInFormHasNoDefaultValues()) {
+
+                var userInfo = getUsernameAndPassword();
+
+                Log.logIn.apply(null, userInfo);
+                var username = userInfo[0];
+
+                if (noRememberIsChecked()) {
+                    window.addEventListener("unload", function () {
+                        Log.deleteUsers();
+                    }, false);
+                }
+
+                loadLogOutForm(username);
+            }
+        };
+
+        var logOutUser = function () {
+
+            Log.logOut();
+
+            loadLogInForm();
+        };
+
+
+        var logInHandler = function (event) {
+
+            event.preventDefault();
+
+            LogInUser();
+        };
+
+        var logOutHandler = function (event) {
+
+            event.preventDefault();
+
+            logOutUser();
+        };
+
+        var previousQuestionHandler = function (event) {
+
+            var target = event.target;
+
+            if (target.className === "backBtn") {
+                goToPreviousQuestion();
+            }
+        };
+
+        var nextQuestionHandler = function (event) {
+
+            event.preventDefault();
+
+            goToNextQuestion();
+        };
+
+        return {
+            startApplication: function () {
+
+                questions.loadQuestions().done(function () {
+
+                    if (Log.userAlreadyExists()) {
+                        var username = Log.logExistingUser();
+                        loadLogOutForm(username);
+                    }
+
+                    nextQuestion();
+
+                    Constants.DOMLookups.QuestionsForm.addEventListener("click", previousQuestionHandler, false);
+                    Constants.DOMLookups.QuestionsForm.addEventListener("submit", nextQuestionHandler, false);
+
+                    Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
+                    Constants.DOMLookups.LogInForm.addEventListener("click", defaultValueOff, false);
+                    Constants.DOMLookups.LogInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
+
+                    Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
+                });
+            }
+        };
+    }();
 
     return {
         startQuiz: function () {
-
-            Questionnaire.fillQuestionnaire(getCurrentQuestion());
-
-            questionsForm.addEventListener("click", previousQuestionHandler, false);
-            questionsForm.addEventListener("submit", nextQuestionHandler, false);
-
+            Application.startApplication();
         }
     };
 }();
 
-Application.startQuiz();
+Quiz.startQuiz();
+
+
 
 

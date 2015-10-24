@@ -9,13 +9,37 @@
     </head>
     <body>
     <div class="quiz">
-        <header class="title">
-            <h1>Quiz</h1>
+        <header class="titleHeader">
+            <div class="title">
+                <h1>Quiz</h1>
+            </div>
+            <div class="log">
+                <form class="logInForm">
+                    <div class="credentials">
+                        <input type="text" value="username" name="username" class="username" size="7" required>
+                        <input type="password" value="password" name="password" class="password" size="7" required>
+                    </div>
+                    <div>
+                        <input type="checkbox" value="noRemember" class="noRemember">Don't remember me
+                    </div>
+                    <div>
+                        <input type="submit" value="Log In" name="logInBtn">
+                    </div>
+                </form>
+                <form class="logOutForm">
+                    <div class="userMessage">
+                    </div>
+                    <div>
+                        <input type="submit" value="Log Out" name="Log Out">
+                    </div>
+
+                </form>
+            </div>
         </header>
         <main class="questionnarie">
             <div class="questionsFlex">
                 <form class="questionsForm">
-                    <div class = "QA">
+                    <div class ="QA">
                         <div class="question">
                         </div>
                         <div class="choices">
@@ -34,10 +58,5 @@
         <aside class="aside marginRigth"></aside>
         <footer class="footer"> </footer>
     </div>
-
-
-
-
-
     </body>
 </html>

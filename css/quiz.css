@@ -18,10 +18,76 @@
     flex: 1 100%;
 }
 
+.titleHeader
+{
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: row wrap;
+
+    flex-flow: row wrap;
+
+    flex: 1 100%;
+
+    padding: 0.5%;
+}
+
 .title
 {
     font-weight: 700;
-    text-align: center;
+    text-align: left;
+    flex: 2;
+}
+
+.log
+{
+    font-weight: 400;
+    margin-top: 1%;
+    flex: 1;
+}
+
+.logInForm
+{
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: column wrap;
+
+    flex-flow: column wrap;
+
+    text-align: right;
+}
+
+.noRemember
+{
+    font-weight: 300;
+}
+.logOutForm
+{
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: column wrap;
+
+    flex-flow: column wrap;
+
+    text-align: right;
+
+    display: none;
+}
+
+.credentials
+{
+    opacity: 0.5;
 }
 
 .footer
@@ -29,7 +95,7 @@
 }
 
 .questionnarie
-{
+ {
     border: 2px solid lightgrey;
 }
 
@@ -60,8 +126,6 @@
 
 }
 
-
-
 ul
 {
     display: -webkit-box;
@@ -70,16 +134,15 @@ ul
     display: -webkit-flex;
     display: flex;
 
-    -webkit-flex-flow: row;
+    -webkit-flex-flow: row wrap;
 
-    flex-direction: row;
-    flex-wrap: wrap;
-
+    flex-flow: row wrap;
 }
-li 
+
+li
 {
     display: inline;
-    flex-grow: 1;
+    flex: 1;
 }
 
 .buttons
@@ -101,6 +164,7 @@ li
     font-weight: bold;
     text-align: center;
 }
+
 @media all and (min-width: 600px)
 {
     .aside { flex:1 auto;}
@@ -109,7 +173,7 @@ li
 
 @media all and (min-width: 800px)
 {
-    .questionnarie {flex: 2 0px;}
+    .questionnarie {flex: 4 0px;}
     .marginLeft {order: 1;}
     .questionnarie {order: 2;}
     .marginRigth {order: 3;}
