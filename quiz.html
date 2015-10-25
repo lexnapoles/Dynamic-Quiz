@@ -1,62 +1,45 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Dynamic Quiz</title>
-        <link href='https://fonts.googleapis.com/css?family=Roboto:700,300,400italic' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" type="text/css" href="css/quiz.css">
-        <script type="text/javascript" defer src="js/jquery-1.11.3.js"></script>
-        <script type="text/javascript" defer src="js/quiz.js"></script>
-    </head>
-    <body>
-    <div class="quiz">
-        <header class="titleHeader">
-            <div class="title">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Quiz</title>
+    <link rel= "stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:700,300,400italic" >
+    <link rel="stylesheet" type="text/css" href="css/quiz.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+    <script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+    <div class="quiz container-fluid">
+
+        <header class="row">
+
+            <div class="title col-xs-12 col-sm-6 col-md-8">
                 <h1>Quiz</h1>
             </div>
-            <div class="log">
-                <form class="logInForm">
-                    <div class="credentials">
-                        <input type="text" value="username" name="username" class="username" size="7" required>
-                        <input type="password" value="password" name="password" class="password" size="7" required>
-                    </div>
-                    <div>
-                        <input type="checkbox" value="noRemember" class="noRemember">Don't remember me
-                    </div>
-                    <div>
-                        <input type="submit" value="Log In" name="logInBtn">
-                    </div>
-                </form>
-                <form class="logOutForm">
-                    <div class="userMessage">
-                    </div>
-                    <div>
-                        <input type="submit" value="Log Out" name="Log Out">
-                    </div>
 
-                </form>
-            </div>
+            <div class="log col-xs-6 col-md-4"><p>LOG</p></div>
+
         </header>
-        <main class="questionnarie">
-            <div class="questionsFlex">
-                <form class="questionsForm">
-                    <div class ="QA">
-                        <div class="question">
-                        </div>
-                        <div class="choices">
-                            <ul class="choicesList">
-                            </ul>
-                        </div>
-                     </div>
-                    <div class="buttons">
-                        <button type="button" class="backBtn">Back</button>
-                        <button type="submit" class="submitBtn">Next</button>
-                    </div>
-                </form>
-            </div>
-        </main>
-        <aside class="aside marginLeft"></aside>
-        <aside class="aside marginRigth"></aside>
-        <footer class="footer"> </footer>
+
+        <div class="row">
+
+            <aside class="aside col-md-2"><p>aside</p></aside>
+
+            <main class="questionnaire col-xs-12 col-sm-6 col-md-8"><p>Questionnaire</p></main>
+
+            <aside class="aside col-md-2"><p>aside></p></aside>
+
+        </div>
+
+        <footer class="row footer">
+            <div class="col-md-12"></div>
+        </footer>
+
     </div>
-    </body>
+
+</body>
 </html>

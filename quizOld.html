@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dynamic Quiz</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto:700,300,400italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="css/quizOld.css">
+        <script type="text/javascript" defer src="js/jquery-1.11.3.js"></script>
+        <script type="text/javascript" defer src="js/quiz.js"></script>
+    </head>
+    <body>
+    <div class="quiz">
+        <header class="titleHeader">
+            <div class="title">
+                <h1>Quiz</h1>
+            </div>
+            <div class="log">
+                <form class="logInForm">
+                    <div class="credentials">
+                        <input type="text" value="username" name="username" class="username" size="7" required>
+                        <input type="password" value="password" name="password" class="password" size="7" required>
+                    </div>
+                    <div>
+                        <input type="checkbox" value="noRemember" class="noRemember">Don't remember me
+                    </div>
+                    <div>
+                        <input type="submit" value="Log In" name="logInBtn">
+                    </div>
+                </form>
+                <form class="logOutForm">
+                    <div class="userMessage">
+                    </div>
+                    <div>
+                        <input type="submit" value="Log Out" name="Log Out">
+                    </div>
+
+                </form>
+            </div>
+        </header>
+        <main class="questionnarie">
+            <div class="questionsFlex">
+                <form class="questionsForm">
+                    <div class ="QA">
+                        <div class="question">
+                        </div>
+                        <div class="choices">
+                            <ul class="choicesList">
+                            </ul>
+                        </div>
+                     </div>
+                    <div class="buttons">
+                        <button type="button" class="backBtn">Back</button>
+                        <button type="submit" class="submitBtn">Next</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+        <aside class="aside marginLeft"></aside>
+        <aside class="aside marginRigth"></aside>
+        <footer class="footer"> </footer>
+    </div>
+    </body>
+</html>
