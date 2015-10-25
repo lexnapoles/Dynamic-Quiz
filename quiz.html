@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Dynamic Quiz</title>
@@ -13,7 +13,7 @@
 </head>
 <body>
 
-    <div class="quiz container-fluid">
+    <div class="quiz container">
 
         <header class="row">
 
@@ -21,17 +21,44 @@
                 <h1>Quiz</h1>
             </div>
 
-            <div class="log col-xs-6 col-md-4"><p>LOG</p></div>
+            <div class="log col-xs-6 col-md-4">
+
+
+                <form class="form-horizontal logInForm">
+
+                    <div class="form-group">
+                        <div class="col-sm-4">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="Username" size="7" required>
+                        </div>
+                            <div class="col-sm-4">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Password" size="7" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="logInBtn">Log In</button>
+                    </div>
+                </form>
+
+                <form class="form-horizontal logOutForm">
+                    <div class="userMessage">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">Log Out</button>
+                    </div>
+                </form>
+            </div>
 
         </header>
 
         <div class="row">
 
-            <aside class="aside col-md-2"><p>aside</p></aside>
+            <aside class="aside  col-xs-12 col-sm-6 col-md-2"></aside>
 
-            <main class="questionnaire col-xs-12 col-sm-6 col-md-8"><p>Questionnaire</p></main>
+            <main class="questionnaire col-xs-12 col-sm-6 col-md-8"></main>
 
-            <aside class="aside col-md-2"><p>aside></p></aside>
+            <aside class="aside col-xs-12 col-sm-6 col-md-2"></aside>
 
         </div>
 

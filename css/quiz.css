@@ -7,7 +7,12 @@
 
 .log {
         background: yellow;
-    }
+}
+
+.logOutForm {
+    display: none;
+}
+
 
 .aside {
     background: darkolivegreen;
@@ -20,3 +25,4 @@
 .footer {
     background: greenyellow;
 }
+
