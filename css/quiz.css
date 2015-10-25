@@ -9,9 +9,20 @@
         background: yellow;
 }
 
+.logInForm {
+}
+
+
+
 .logOutForm {
     display: none;
 }
+
+.logButtons {
+    margin-right: 5%;
+
+}
+
 
 
 .aside {
@@ -21,6 +32,16 @@
 .questionnaire {
     background: antiquewhite;
 }
+
+li
+{
+    display: inline;
+}
+
+.buttons {
+    text-align: center;
+}
+
 
 .footer {
     background: greenyellow;
