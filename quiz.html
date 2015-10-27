@@ -8,7 +8,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
 
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+    <script defer type="text/javascript" src="js/quiz.js"></script>
 
 </head>
 <body>
@@ -21,26 +24,28 @@
                 <h1>Quiz</h1>
             </div>
 
-            <div class="log col-xs-6 col-sm-4 col-md-3">
+            <div class="log col-xs-12 col-sm-4 col-md-3">
 
                 <form class="form-horizontal logInForm">
 
                     <div class="form-group">
-                        <div class=" col-xs-7 col-sm-6 col-md-6">
+                        <div class=" col-xs-8 col-sm-6 col-md-6">
                             <label for="username">Username</label>
                             <input type="text" class="form-control" id="username" placeholder="Username" size="7" required>
                         </div>
-                        <div class="col-xs-7 col-sm-6 col-md-6">
+                        <div class="col-xs-8 col-sm-6 col-md-6">
                             <label for="password">Password</label>
                             <input type="password" class="form-control" id="password" placeholder="Password" size="7" required>
                         </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-12 col-md-12">
-                        <input type="checkbox" value="noRemember" class="noRemember">Don't remember me
+                        <input type="checkbox" value="noRemember" id="noRemember" class="col-xs-1">
+                        <label for="noRemember" class="noRememberLabel col-xs-11">Don't remember me</label>
+
                     </div>
                     <div class="form-group ">
                         <div class="col-xs-6 col-xs-offset-1 col-sm-5 col-sm-offset-7 col-md-6 col-md-offset-6 ">
-                            <button type="submit" class="logButtons pull-right">Log In</button>
+                            <button type="submit" class="logButtons  btn btn-default pull-right">Log In</button>
                         </div>
                     </div>
                 </form>
@@ -48,7 +53,7 @@
                 <form class="form-horizontal logOutForm">
                     <div class="userMessage"></div>
                     <div class="form-group">
-                        <button type="submit" class="logButtons pull-right">Log Out</button>
+                        <button type="submit" class="logButtons btn btn-default  pull-right">Log Out</button>
                     </div>
                 </form>
             </div>
@@ -68,9 +73,9 @@
                         <ul class="choicesList">
                         </ul>
                     </div>
-                    <div class="buttons form-group col-xs-12 col-sm-12 col-md-12">
-                        <button type="button" class="backBtn">Back</button>
-                        <button type="submit" class="nextBtn">Next</button>
+                    <div class="buttons text-center form-group col-xs-12 col-sm-12 col-md-12">
+                        <button type="button" class="backBtn btn btn-default">Back</button>
+                        <button type="submitr" class="nextBtn btn btn-default">Next</button>
                     </div>
                 </form>
             </main>
