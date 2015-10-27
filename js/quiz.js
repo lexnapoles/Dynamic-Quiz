@@ -307,15 +307,6 @@ var Quiz = function () {
             }
         };
 
-        var defaultValueOff = function (event) {
-
-            var target = event.target;
-
-            if (target.className === Constants.USERNAME || target.className === "password") {
-                target.value = "";
-            }
-        };
-
         var getUsernameAndPassword = function () {
 
             var info = [],
@@ -416,7 +407,7 @@ var Quiz = function () {
 
             var target = event.target;
 
-            if (target.className === "backBtn") {
+            if (target.className.search(/backBtn/) > -1 ) {
                 goToPreviousQuestion();
             }
         };
@@ -444,8 +435,7 @@ var Quiz = function () {
                     Constants.DOMLookups.QuestionsForm.addEventListener("submit", nextQuestionHandler, false);
 
                     Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
-                    Constants.DOMLookups.LogInForm.addEventListener("click", defaultValueOff, false);
-
+                    
                     Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
                 });
             }
