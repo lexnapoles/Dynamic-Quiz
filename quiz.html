@@ -15,8 +15,7 @@
 
 </head>
 <body>
-
-    <div class="quiz container">
+    <div class="quiz container-fluid">
 
         <header class="row header">
 
@@ -29,63 +28,61 @@
                 <form class="form-horizontal logInForm">
 
                     <div class="form-group">
-                        <div class=" col-xs-8 col-sm-6 col-md-6">
+                        <div class="col-xs-6">
                             <label for="username">Username</label>
                             <input type="text" class="form-control" id="username" placeholder="Username" size="7" required>
                         </div>
-                        <div class="col-xs-8 col-sm-6 col-md-6">
+                        <div class="col-xs-6">
                             <label for="password">Password</label>
                             <input type="password" class="form-control" id="password" placeholder="Password" size="7" required>
                         </div>
                     </div>
-                    <div class="form-group col-xs-12 col-sm-12 col-md-12">
-                        <input type="checkbox" value="noRemember" id="noRemember" class="col-xs-1">
-                        <label for="noRemember" class="noRememberLabel col-xs-11">Don't remember me</label>
+                    <div class="form-group col-xs-12">
+                        <input type="checkbox" value="noRemember" id="noRemember" >
+                        <label for="noRemember" class="noRememberLabel">Don't remember me</label>
 
                     </div>
                     <div class="form-group ">
-                        <div class="col-xs-6 col-xs-offset-1 col-sm-5 col-sm-offset-7 col-md-6 col-md-offset-6 ">
+                        <div class="pull-right">
                             <button type="submit" class="logButtons  btn btn-default pull-right">Log In</button>
                         </div>
                     </div>
                 </form>
 
-                <form class="form-horizontal logOutForm">
+                <form class="form-horizontal logOutForm hidden">
                     <div class="userMessage"></div>
                     <div class="form-group">
                         <button type="submit" class="logButtons btn btn-default  pull-right">Log Out</button>
                     </div>
                 </form>
             </div>
-
         </header>
 
         <div class="row">
 
-            <aside class="aside  col-xs-12 col-sm-2 col-md-2"></aside>
+            <aside class="aside col-sm-2 col-md-2"></aside>
 
-            <main class="questionnaire col-xs-12 col-sm-8 col-md-8">
+            <main class="questionnaire col-sm-8 col-md-8">
 
-                <div class="question col-xs-12 col-sm-12 col-md-12"></div>
+                <div class="question"></div>
 
-                <form class="questionsForm form-horizontal col-xs-12 col-sm-12 col-md-12">
+                <form class="questionsForm form-horizontal">
                     <div class="choices form-group">
-                        <ul class="choicesList">
+                        <ul class="choicesList text-center">
                         </ul>
                     </div>
-                    <div class="buttons text-center form-group col-xs-12 col-sm-12 col-md-12">
+                    <div class="buttons text-center form-group ">
                         <button type="button" class="backBtn btn btn-default">Back</button>
                         <button type="submit" class="nextBtn btn btn-default">Next</button>
                     </div>
                 </form>
             </main>
 
-            <aside class="aside col-xs-12 col-sm-2 col-md-2"></aside>
+            <aside class="aside col-sm-2 col-md-2"></aside>
 
         </div>
 
         <footer class="row footer">
-            <div class="col-md-12"></div>
         </footer>
 
     </div>

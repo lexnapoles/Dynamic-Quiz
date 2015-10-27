@@ -248,7 +248,6 @@ var Quiz = function () {
         };
 
         var nextQuestion = function () {
-
             Questionnaire.fillQuestionnaire(questions.next());
 
             if (userPreviouslyAnswered()) {
@@ -435,7 +434,7 @@ var Quiz = function () {
                     Constants.DOMLookups.QuestionsForm.addEventListener("submit", nextQuestionHandler, false);
 
                     Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
-                    
+
                     Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
                 });
             }
@@ -450,6 +449,8 @@ var Quiz = function () {
 }();
 
 Quiz.startQuiz();
+
+
 
 
 
