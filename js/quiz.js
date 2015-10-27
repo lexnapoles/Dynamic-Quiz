@@ -316,21 +316,6 @@ var Quiz = function () {
             }
         };
 
-        var defaultValueOnIfNoValue = function (event) {
-
-            var target = event.target;
-
-            if (target.value === "") {
-
-                if (target.className === Constants.USERNAME) {
-                    target.value = Constants.USERNAME;
-                }
-                else if (target.className === "password") {
-                    target.value = "password";
-                }
-            }
-        };
-
         var getUsernameAndPassword = function () {
 
             var info = [],
@@ -460,7 +445,6 @@ var Quiz = function () {
 
                     Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
                     Constants.DOMLookups.LogInForm.addEventListener("click", defaultValueOff, false);
-                    Constants.DOMLookups.LogInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
 
                     Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
                 });
