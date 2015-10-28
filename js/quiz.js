@@ -113,7 +113,7 @@ var Quiz = function () {
 
         Score.prototype.changeTitle();
 
-        var main = document.getElementsByClassName("questionnarie")[0],
+        var main = document.getElementsByClassName("questionnaire")[0],
             scoreMsg = Constants.Messages.SCORE_MSG + " " + this.score,
             html = "<h3 class='score'>" + scoreMsg + "</h3>";
 

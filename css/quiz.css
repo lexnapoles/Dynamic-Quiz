@@ -1,19 +1,21 @@
 .quiz > * {
     font-family: 'Roboto', sans-serif;
+    background: whitesmoke;
 }
 
 .header {
-    padding: 0.5%
+    padding: 0.5%;
 }
+
 
 .title {
      margin-top: 3%;
      font-weight: 700;
-    }
+}
 
 .log {  
     font-weight: 400;
-    outline: 1px solid lightgray;
+    outline: 1px solid darkslateblue;
 }
 
 .noRememberLabel {
@@ -24,13 +26,17 @@
     margin-top: 5%;
 }
 
+.logOutForm {
+    display: none;
+}
+
 
 .logButtons {
     margin-right: 20%;
 }
 
 .questionnaire {
-    outline: 1px solid lightgray;
+    outline: 1px solid darkslateblue;
 }
 
 .question {
