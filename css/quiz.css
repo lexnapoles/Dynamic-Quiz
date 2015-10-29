@@ -1,133 +1,50 @@
-.quiz
-{
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-
-    -webkit-flex-flow: row wrap;
-
-    flex-flow: row wrap;
-}
-
-.quiz > *
-{
+.quiz > * {
     font-family: 'Roboto', sans-serif;
-    padding: 10px;
-    flex: 1 100%;
+    background: whitesmoke;
 }
 
-.titleHeader
-{
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-
-    -webkit-flex-flow: row wrap;
-
-    flex-flow: row wrap;
-
-    flex: 1 100%;
-
+.header {
     padding: 0.5%;
 }
 
-.title
-{
-    font-weight: 700;
-    text-align: left;
-    flex: 2;
+
+.title {
+     margin-top: 3%;
+     font-weight: 700;
 }
 
-.log
-{
+.log {  
     font-weight: 400;
-    margin-top: 1%;
-    flex: 1;
+    outline: 1px solid darkslateblue;
 }
 
-.logInForm
-{
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-
-    -webkit-flex-flow: column wrap;
-
-    flex-flow: column wrap;
-
-    text-align: right;
-}
-
-.noRemember
-{
+.noRememberLabel {
     font-weight: 300;
 }
-.logOutForm
-{
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
 
-    -webkit-flex-flow: column wrap;
+.logInForm {
+    margin-top: 5%;
+}
 
-    flex-flow: column wrap;
-
-    text-align: right;
-
+.logOutForm {
     display: none;
 }
 
-.credentials
-{
-    opacity: 0.5;
+
+.logButtons {
+    margin-right: 20%;
 }
 
-.footer
-{
+.questionnaire {
+    outline: 1px solid darkslateblue;
 }
 
-.questionnarie
- {
-    border: 2px solid lightgrey;
-}
-
-.questionsFlex
-{
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-
-    -webkit-flex-flow: row wrap;
-
-    flex-flow: column wrap;
-}
-
-.question
-{
-    padding: 10px;
-    text-align: left;
+.question {
+    padding: 1%;
     font-weight: bold;
-
 }
 
-.choices
-{
-    font-weight: 300;
-
-}
-
-ul
-{
+.choicesList {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -139,52 +56,26 @@ ul
     flex-flow: row wrap;
 }
 
-li
-{
+li {
     display: inline;
-    flex: 1;
+    margin-right: 2%;
+    flex: 1 0 auto;
 }
 
-.buttons
-{
-    text-align: center;
+.backBtn {
+    margin-right: 1%;
 }
 
-.submitBtn
-{
-    margin: 1%;
-}
-.backBtn
-{
-    margin: 1%;
-}
-
-.score
-{
+.score {
     font-weight: bold;
-    text-align: center;
+    text-align:  center;
 }
 
-@media all and (min-width: 600px)
-{
-    .aside { flex:1 auto;}
-
+body {
+    padding: 1em;
 }
 
-@media all and (min-width: 800px)
-{
-    .questionnarie {flex: 4 0px;}
-    .marginLeft {order: 1;}
-    .questionnarie {order: 2;}
-    .marginRigth {order: 3;}
-    .footer {order: 4;}
+@media(max-width:767px){
+
+    .title {text-align: center}
 }
-
-body
-{
-    padding: 2em;
-}
-
-
-
-

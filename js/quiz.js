@@ -113,7 +113,7 @@ var Quiz = function () {
 
         Score.prototype.changeTitle();
 
-        var main = document.getElementsByClassName("questionnarie")[0],
+        var main = document.getElementsByClassName("questionnaire")[0],
             scoreMsg = Constants.Messages.SCORE_MSG + " " + this.score,
             html = "<h3 class='score'>" + scoreMsg + "</h3>";
 
@@ -248,7 +248,6 @@ var Quiz = function () {
         };
 
         var nextQuestion = function () {
-
             Questionnaire.fillQuestionnaire(questions.next());
 
             if (userPreviouslyAnswered()) {
@@ -304,30 +303,6 @@ var Quiz = function () {
             }
             else {
                 window.alert(Constants.Messages.FIRST_QUESTION);
-            }
-        };
-
-        var defaultValueOff = function (event) {
-
-            var target = event.target;
-
-            if (target.className === Constants.USERNAME || target.className === "password") {
-                target.value = "";
-            }
-        };
-
-        var defaultValueOnIfNoValue = function (event) {
-
-            var target = event.target;
-
-            if (target.value === "") {
-
-                if (target.className === Constants.USERNAME) {
-                    target.value = Constants.USERNAME;
-                }
-                else if (target.className === "password") {
-                    target.value = "password";
-                }
             }
         };
 
@@ -431,7 +406,7 @@ var Quiz = function () {
 
             var target = event.target;
 
-            if (target.className === "backBtn") {
+            if (target.className.search(/backBtn/) > -1 ) {
                 goToPreviousQuestion();
             }
         };
@@ -459,8 +434,6 @@ var Quiz = function () {
                     Constants.DOMLookups.QuestionsForm.addEventListener("submit", nextQuestionHandler, false);
 
                     Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
-                    Constants.DOMLookups.LogInForm.addEventListener("click", defaultValueOff, false);
-                    Constants.DOMLookups.LogInForm.addEventListener("mouseout", defaultValueOnIfNoValue, false);
 
                     Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
                 });
@@ -476,6 +449,8 @@ var Quiz = function () {
 }();
 
 Quiz.startQuiz();
+
+
 
 
 
