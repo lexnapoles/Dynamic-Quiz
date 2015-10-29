@@ -1,4 +1,4 @@
-var Quiz = function () {
+var DynamicQuiz = function () {
     "use strict";
 
     var Constants = {
@@ -448,7 +448,7 @@ var Quiz = function () {
     };
 }();
 
-Quiz.startQuiz();
+DynamicQuiz.startQuiz();
 
 
 
