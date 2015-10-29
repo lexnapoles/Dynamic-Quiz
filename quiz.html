@@ -1,62 +1,94 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Dynamic Quiz</title>
-        <link href='https://fonts.googleapis.com/css?family=Roboto:700,300,400italic' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" type="text/css" href="css/quiz.css">
-        <script type="text/javascript" defer src="js/jquery-1.11.3.js"></script>
-        <script type="text/javascript" defer src="js/quiz.js"></script>
-    </head>
-    <body>
-    <div class="quiz">
-        <header class="titleHeader">
-            <div class="title">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Quiz</title>
+    <link rel= "stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:700,300,400italic" >
+    <link rel="stylesheet" type="text/css" href="css/quiz.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+    <script defer type="text/javascript" src="js/quiz.js"></script>
+
+</head>
+<body>
+    <div class="quiz container-fluid">
+
+        <header class="row header">
+
+            <div class="title col-xs-12 col-sm-8 col-md-9">
                 <h1>Quiz</h1>
             </div>
-            <div class="log">
-                <form class="logInForm">
-                    <div class="credentials">
-                        <input type="text" value="username" name="username" class="username" size="7" required>
-                        <input type="password" value="password" name="password" class="password" size="7" required>
+
+            <div class="log col-xs-12 col-sm-4 col-md-3">
+
+                <form class="form-horizontal logInForm">
+
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="Username" size="7" required>
+                        </div>
+                        <div class="col-xs-6">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Password" size="7" required>
+                        </div>
                     </div>
-                    <div>
-                        <input type="checkbox" value="noRemember" class="noRemember">Don't remember me
+                    <div class="form-group col-xs-12">
+                        <input type="checkbox" value="noRemember" id="noRemember" >
+                        <label for="noRemember" class="noRememberLabel">Don't remember me</label>
+
                     </div>
-                    <div>
-                        <input type="submit" value="Log In" name="logInBtn">
+                    <div class="form-group ">
+                        <div class="pull-right">
+                            <button type="submit" class="logButtons  btn btn-default pull-right">Log In</button>
+                        </div>
                     </div>
                 </form>
-                <form class="logOutForm">
-                    <div class="userMessage">
-                    </div>
-                    <div>
-                        <input type="submit" value="Log Out" name="Log Out">
-                    </div>
 
+                <form class="form-horizontal logOutForm">
+                    <div class="userMessage"></div>
+                    <div class="form-group">
+                        <button type="submit" class="logButtons btn btn-default  pull-right">Log Out</button>
+                    </div>
                 </form>
             </div>
         </header>
-        <main class="questionnarie">
-            <div class="questionsFlex">
-                <form class="questionsForm">
-                    <div class ="QA">
-                        <div class="question">
-                        </div>
-                        <div class="choices">
-                            <ul class="choicesList">
+
+        <div class="row">
+
+            <aside class="aside col-sm-2 col-md-2"></aside>
+
+            <main class="questionnaire col-sm-8 col-md-8">
+
+                <div class="QA">
+                    <div class="question"></div>
+
+                    <form class="questionsForm form-horizontal">
+                        <div class="choices form-group">
+                            <ul class="choicesList text-center">
                             </ul>
                         </div>
-                     </div>
-                    <div class="buttons">
-                        <button type="button" class="backBtn">Back</button>
-                        <button type="submit" class="submitBtn">Next</button>
-                    </div>
-                </form>
-            </div>
-        </main>
-        <aside class="aside marginLeft"></aside>
-        <aside class="aside marginRigth"></aside>
-        <footer class="footer"> </footer>
+                        <div class="buttons text-center form-group ">
+                            <button type="button" class="backBtn btn btn-default">Back</button>
+                            <button type="submit" class="nextBtn btn btn-default">Next</button>
+                        </div>
+                    </form>
+
+                </div>
+            </main>
+
+            <aside class="aside col-sm-2 col-md-2"></aside>
+
+        </div>
+
+        <footer class="row footer">
+        </footer>
+
     </div>
-    </body>
+
+</body>
 </html>

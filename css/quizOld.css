@@ -1,0 +1,190 @@
+.quiz
+{
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: row wrap;
+
+    flex-flow: row wrap;
+}
+
+.quiz > *
+{
+    font-family: 'Roboto', sans-serif;
+    padding: 10px;
+    flex: 1 100%;
+}
+
+.titleHeader
+{
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: row wrap;
+
+    flex-flow: row wrap;
+
+    flex: 1 100%;
+
+    padding: 0.5%;
+}
+
+.title
+{
+    font-weight: 700;
+    text-align: left;
+    flex: 2;
+}
+
+.log
+{
+    font-weight: 400;
+    margin-top: 1%;
+    flex: 1;
+}
+
+.logInForm
+{
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: column wrap;
+
+    flex-flow: column wrap;
+
+    text-align: right;
+}
+
+.noRemember
+{
+    font-weight: 300;
+}
+.logOutForm
+{
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: column wrap;
+
+    flex-flow: column wrap;
+
+    text-align: right;
+
+    display: none;
+}
+
+.credentials
+{
+    opacity: 0.5;
+}
+
+.footer
+{
+}
+
+.questionnarie
+ {
+    border: 2px solid lightgrey;
+}
+
+.questionsFlex
+{
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: row wrap;
+
+    flex-flow: column wrap;
+}
+
+.question
+{
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+
+}
+
+.choices
+{
+    font-weight: 300;
+
+}
+
+ul
+{
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: row wrap;
+
+    flex-flow: row wrap;
+}
+
+li
+{
+    display: inline;
+    flex: 1;
+}
+
+.buttons
+{
+    text-align: center;
+}
+
+.submitBtn
+{
+    margin: 1%;
+}
+.backBtn
+{
+    margin: 1%;
+}
+
+.score
+{
+    font-weight: bold;
+    text-align: center;
+}
+
+@media all and (min-width: 600px)
+{
+    .aside { flex:1 auto;}
+
+}
+
+@media all and (min-width: 800px)
+{
+    .questionnarie {flex: 4 0px;}
+    .marginLeft {order: 1;}
+    .questionnarie {order: 2;}
+    .marginRigth {order: 3;}
+    .footer {order: 4;}
+}
+
+body
+{
+    padding: 2em;
+}
+
+
+
+
