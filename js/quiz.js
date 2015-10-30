@@ -314,8 +314,9 @@ var DynamicQuiz = function () {
     };
 
     var Application = function () {
-
-        var quiz = new Quiz();
+        
+        var quizes = [];
+        var quizes[0] = new Quiz();
 
          var getUsernameAndPassword = function () {
 
@@ -418,7 +419,7 @@ var DynamicQuiz = function () {
             var target = event.target;
 
             if (target.className.search(/backBtn/) > -1 ) {
-                quiz.goToPreviousQuestion();
+                quizes[0].goToPreviousQuestion();
             }
         };
 
@@ -426,20 +427,20 @@ var DynamicQuiz = function () {
 
             event.preventDefault();
 
-            quiz.goToNextQuestion();
+            quizes[0].goToNextQuestion();
         };
 
         return {
             startApplication: function () {
 
-                quiz.loadQuestions().done(function () {
+                quizes[0].loadQuestions().done(function () {
 
                     if (Log.userAlreadyExists()) {
                         var username = Log.logExistingUser();
                         loadLogOutForm(username);
                     }
 
-                    quiz.nextQuestion();
+                    quizes[0].nextQuestion();
 
                     Constants.DOMLookups.QuestionsForm.addEventListener("click", previousQuestionHandler, false);
                     Constants.DOMLookups.QuestionsForm.addEventListener("submit", nextQuestionHandler, false);
