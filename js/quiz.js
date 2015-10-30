@@ -171,7 +171,6 @@ var DynamicQuiz = function () {
         var logged = false;
 
         return {
-
             logIn: function (username, password) {
 
                 var user = localStorage.getItem(Constants.USERNAME);
@@ -210,103 +209,115 @@ var DynamicQuiz = function () {
         };
     }();
 
-    var Application = function () {
 
-        var questions = new QuestionsAndAnswers(Constants.JSON_FILE),
-            userAnswers = [],
-            score = new Score();
 
-        var getChoiceChecked = function (form) {
+    var Quiz = function() {
 
-            var choices = form.elements;
+        this.questions = new QuestionsAndAnswers(Constants.JSON_FILE);
+        this.userAnswers = [];
+        this.score = new Score();
+    };
 
-            for (var i = 0, len = choices.length; i < len; i++) {
+    Quiz.prototype.getChoiceChecked = function (form) {
 
-                if (choices[i].checked) {
+        var choices = form.elements;
 
-                    return i;
-                }
+        for (var i = 0, len = choices.length; i < len; i++) {
+
+            if (choices[i].checked) {
+
+                return i;
             }
-            return -1;
-        };
+        }
+        return -1;
+    };
 
-        var userPreviouslyAnswered = function () {
-            return questions.index() < userAnswers.length;
-        };
+    Quiz.prototype.userPreviouslyAnswered = function () {
+        return this.questions.index() < this.userAnswers.length;
+    };
 
-        var saveUserAnswer = function (answer) {
-            if (userPreviouslyAnswered()) {
-                userAnswers[questions.index()] = answer;
+    Quiz.prototype.saveUserAnswer = function (answer) {
+        if (this.userPreviouslyAnswered()) {
+            this.userAnswers[this.questions.index()] = answer;
+        }
+        else {
+            this.userAnswers[this.userAnswers.length] = answer;
+        }
+    };
+
+    Quiz.prototype.getUserAnswer = function () {
+        return this.userAnswers[this.questions.index()];
+    };
+
+    Quiz.prototype.nextQuestion = function () {
+        Questionnaire.fillQuestionnaire(this.questions.next());
+
+        if (this.userPreviouslyAnswered()) {
+            Questionnaire.setUserAnswer(this.getUserAnswer());
+        }
+    };
+
+    Quiz.prototype.previousQuestion = function () {
+        Questionnaire.fillQuestionnaire(this.questions.previous());
+        Questionnaire.setUserAnswer(this.getUserAnswer());
+    };
+
+    Quiz.prototype.goToNextQuestion = function () {
+
+        var choiceChecked = this.getChoiceChecked(Constants.DOMLookups.QuestionsForm);
+
+        if (choiceChecked >= 0) {
+
+            this.saveUserAnswer(choiceChecked);
+
+            if (this.questions.isCorrectChoice(choiceChecked)) {
+                this.score.increaseScore();
             }
-            else {
-                userAnswers[userAnswers.length] = answer;
-            }
-        };
 
-        var getUserAnswer = function () {
-            return userAnswers[questions.index()];
-        };
-
-        var nextQuestion = function () {
-            Questionnaire.fillQuestionnaire(questions.next());
-
-            if (userPreviouslyAnswered()) {
-                Questionnaire.setUserAnswer(getUserAnswer());
-            }
-        };
-
-        var previousQuestion = function () {
-            Questionnaire.fillQuestionnaire(questions.previous());
-            Questionnaire.setUserAnswer(getUserAnswer());
-        };
-
-        var goToNextQuestion = function () {
-
-            var choiceChecked = getChoiceChecked(Constants.DOMLookups.QuestionsForm);
-
-            if (choiceChecked >= 0) {
-
-                saveUserAnswer(choiceChecked);
-
-                if (questions.isCorrectChoice(choiceChecked)) {
-                    score.increaseScore();
-                }
-
-                if (!questions.noMoreQuestions()) {
-
-                    var QA = $(".QA");
-
-                    QA.fadeTo("fast", 0, nextQuestion);
-
-                    QA.fadeTo("fast", 1);
-                }
-                else {
-                    score.showScore();
-                }
-            }
-            else {
-                window.alert(Constants.Messages.PICK_CHOICE_MSG);
-            }
-        };
-
-        var goToPreviousQuestion = function () {
-
-            if (!questions.isFirstQuestion()) {
+            if (!this.questions.noMoreQuestions()) {
 
                 var QA = $(".QA");
 
-                QA.fadeTo("fast", 0, previousQuestion);
+                QA.fadeTo("fast", 0, this.nextQuestion.bind(this));
 
                 QA.fadeTo("fast", 1);
-
-                score.decreaseScore();
             }
             else {
-                window.alert(Constants.Messages.FIRST_QUESTION);
+                this.score.showScore();
             }
-        };
+        }
+        else {
+            window.alert(Constants.Messages.PICK_CHOICE_MSG);
+        }
+    };
 
-        var getUsernameAndPassword = function () {
+    Quiz.prototype.goToPreviousQuestion = function () {
+
+        if (!this.questions.isFirstQuestion()) {
+
+            var QA = $(".QA");
+
+            QA.fadeTo("fast", 0,  this.previousQuestion.bind(this));
+
+            QA.fadeTo("fast", 1);
+
+            this.score.decreaseScore();
+        }
+        else {
+            window.alert(Constants.Messages.FIRST_QUESTION);
+        }
+    };
+
+    Quiz.prototype.loadQuestions = function() {
+        return this.questions.loadQuestions();
+
+    };
+
+    var Application = function () {
+
+        var quiz = new Quiz();
+
+         var getUsernameAndPassword = function () {
 
             var info = [],
                 field = Constants.DOMLookups.LogInForm.elements;
@@ -407,7 +418,7 @@ var DynamicQuiz = function () {
             var target = event.target;
 
             if (target.className.search(/backBtn/) > -1 ) {
-                goToPreviousQuestion();
+                quiz.goToPreviousQuestion();
             }
         };
 
@@ -415,20 +426,20 @@ var DynamicQuiz = function () {
 
             event.preventDefault();
 
-            goToNextQuestion();
+            quiz.goToNextQuestion();
         };
 
         return {
             startApplication: function () {
 
-                questions.loadQuestions().done(function () {
+                quiz.loadQuestions().done(function () {
 
                     if (Log.userAlreadyExists()) {
                         var username = Log.logExistingUser();
                         loadLogOutForm(username);
                     }
 
-                    nextQuestion();
+                    quiz.nextQuestion();
 
                     Constants.DOMLookups.QuestionsForm.addEventListener("click", previousQuestionHandler, false);
                     Constants.DOMLookups.QuestionsForm.addEventListener("submit", nextQuestionHandler, false);
