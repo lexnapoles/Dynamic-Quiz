@@ -480,6 +480,13 @@ DynamicQuiz.App = function () {
 
                 DynamicQuiz.Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
             });
+        },
+
+        addQuiz: function(quiz) {
+
+            if (quiz !== null) {
+                quizzes.push(quiz);
+            }
         }
     };
 }();
