@@ -350,8 +350,8 @@ var DynamicQuiz = function () {
         };
 
         var logInFormInputValuesToDefault = function () {
-            Constants.DOMLookups.LogInForm.elements[0].value = Constants.USERNAME;
-            Constants.DOMLookups.LogInForm.elements[1].value = "password";
+            Constants.DOMLookups.LogInForm.elements[0].value = "";
+            Constants.DOMLookups.LogInForm.elements[1].value = "";
         };
 
         var logInFormHasNoDefaultValues = function () {
