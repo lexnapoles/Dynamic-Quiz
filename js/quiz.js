@@ -138,9 +138,9 @@ DynamicQuiz.QuizElements.Questionnaire = function () {
 
 
 
-DynamicQuiz.QuizElements.Quiz = function () {
+DynamicQuiz.QuizElements.Quiz = function (jsonFile) {
     "use strict";
-    this.questions = new DynamicQuiz.QuizElements.QuestionsAndAnswers(DynamicQuiz.Constants.JSON_FILE);
+    this.questions = new DynamicQuiz.QuizElements.QuestionsAndAnswers(jsonFile);
     this.userAnswers = [];
     this.score = new DynamicQuiz.QuizElements.Score();
 };
@@ -346,7 +346,7 @@ DynamicQuiz.App = function () {
     "use strict";
 
     var quizzes = [];
-    quizzes.push(new DynamicQuiz.QuizElements.Quiz());
+    quizzes.push(new DynamicQuiz.QuizElements.Quiz(DynamicQuiz.Constants.JSON_FILE));
     var quiz = quizzes[0];
 
     var getUsernameAndPassword = function () {
