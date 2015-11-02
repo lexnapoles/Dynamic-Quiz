@@ -1,6 +1,5 @@
 .quiz > * {
     font-family: 'Roboto', sans-serif;
-    background: whitesmoke;
 }
 
 .header {
@@ -33,6 +32,11 @@
 
 .logButtons {
     margin-right: 20%;
+}
+
+.quizzesNav {
+    padding-top: 1%;
+    padding-bottom: 3%;
 }
 
 .questionnaire {

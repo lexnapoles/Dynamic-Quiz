@@ -18,17 +18,11 @@ DynamicQuiz.Constants = {
         "use strict";
         var doc = document,
             logInForm = doc.getElementsByClassName("logInForm")[0],
-            logOutForm = doc.getElementsByClassName("logOutForm")[0],
-            questionDiv = doc.getElementsByClassName("question")[0],
-            questionsForm = doc.getElementsByClassName("questionsForm")[0],
-            choicesList = doc.getElementsByClassName("choicesList")[0];
+            logOutForm = doc.getElementsByClassName("logOutForm")[0];
 
         return {
             LogInForm: logInForm,
-            LogOutForm: logOutForm,
-            QuestionDiv: questionDiv,
-            QuestionsForm: questionsForm,
-            ChoicesList: choicesList
+            LogOutForm: logOutForm
         };
     }()
 };
@@ -94,8 +88,10 @@ DynamicQuiz.QuizElements.Score.prototype.showScore = function () {
         scoreMsg = DynamicQuiz.Constants.Messages.SCORE_MSG + " " + this.score,
         html = "<h3 class='score'>" + scoreMsg + "</h3>";
 
-    DynamicQuiz.Constants.DOMLookups.QuestionsForm.onsubmit = null;
-    DynamicQuiz.Constants.DOMLookups.QuestionsForm.onclick = null;
+    var QuestionsForm = document.getElementsByClassName("questionsForm")[0];
+
+    QuestionsForm.onsubmit = null;
+    QuestionsForm.onclick = null;
 
     main.innerHTML = html;
 };
@@ -118,19 +114,27 @@ DynamicQuiz.QuizElements.Questionnaire = function () {
 
         var html = "<label>" + text + "</label>";
 
-        DynamicQuiz.Constants.DOMLookups.QuestionDiv.innerHTML = html;
+        var questionDiv = document.getElementsByClassName("question")[0];
+
+        questionDiv.innerHTML = html;
     };
 
     return {
         fillQuestionnaire: function (question) {
             fillQuestion(question.getQuestion());
-            fillChoices(DynamicQuiz.Constants.DOMLookups.ChoicesList, question.getChoices());
+
+            var ChoicesList = document.getElementsByClassName("choicesList")[0];
+
+            fillChoices(ChoicesList, question.getChoices());
         },
 
         setUserAnswer: function (answer) {
 
-            if (answer < DynamicQuiz.Constants.DOMLookups.QuestionsForm.elements.length) {
-                DynamicQuiz.Constants.DOMLookups.QuestionsForm.elements[answer].checked = true;
+            var QuestionDiv = document.getElementsByClassName("question")[0];
+            var QuestionsForm = document.getElementsByClassName("questionsForm")[0];
+
+            if (answer < QuestionDiv.elements.length) {
+               QuestionsForm.elements[answer].checked = true;
             }
         }
     };
@@ -249,7 +253,10 @@ DynamicQuiz.QuizElements.Quiz.prototype.previousQuestion = function () {
 
 DynamicQuiz.QuizElements.Quiz.prototype.goToNextQuestion = function () {
     "use strict";
-    var choiceChecked = this.getChoiceChecked(DynamicQuiz.Constants.DOMLookups.QuestionsForm);
+
+    var QuestionsForm = document.getElementsByClassName("questionsForm")[0];
+
+    var choiceChecked = this.getChoiceChecked(QuestionsForm);
 
     if (choiceChecked >= 0) {
 
@@ -346,8 +353,7 @@ DynamicQuiz.App = function () {
     "use strict";
 
     var quizzes = [];
-    quizzes.push(new DynamicQuiz.QuizElements.Quiz(DynamicQuiz.Constants.JSON_FILE));
-    var quiz = quizzes[0];
+    var currentQuiz;
 
     var getUsernameAndPassword = function () {
 
@@ -450,7 +456,7 @@ DynamicQuiz.App = function () {
         var target = event.target;
 
         if (target.className.search(/backBtn/) > -1 ) {
-            quiz.goToPreviousQuestion();
+            currentQuiz.goToPreviousQuestion();
         }
     };
 
@@ -458,39 +464,117 @@ DynamicQuiz.App = function () {
 
         event.preventDefault();
 
-        quiz.goToNextQuestion();
+        currentQuiz.goToNextQuestion();
+    };
+
+    var addQuizTab = function() {
+
+        var doc = document,
+            quizzesList = doc.getElementsByClassName("quizzesList")[0],
+            fragment = doc.createDocumentFragment(),
+            quizNumber =  quizzes.length,
+            html = "",
+            liElement = doc.createElement("LI");
+
+        liElement.setAttribute("role", "presentation");
+
+        if (quizzes.length === 1) {
+            liElement.setAttribute("class", "active");
+        }
+
+        window.alert(html);
+
+        html +=  "<a href='#quiz" + quizNumber + "' " + "data-toggle='tab'>Quiz " + quizNumber + "</a></li>";
+
+        window.alert(html);
+
+        liElement.innerHTML = html;
+        fragment.appendChild(liElement);
+        quizzesList.appendChild(fragment);
+
+        window.alert(quizzesList.innerHTML);
+    };
+
+    var addQuizToHTML = function () {
+
+        var doc = document,
+            fragment = doc.createDocumentFragment(),
+            div = doc.createElement("DIV"),
+            id = "quiz" + quizzes.length + "' ",
+            html = "";
+
+        div.setAttribute("role", "tabpanel");
+        div.setAttribute("id", id);
+
+        if (quizzes.length === 1) {
+            div.setAttribute("class", "quiz tab-pane fade in active");
+        }
+        else {
+            div.setAttribute("class", "quiz tab-pane fade");
+        }
+
+        html += "<main class='questionnaire col-sm-8 col-md-8'>" +
+                "<div class='QA'>" +
+                "<div class='question'></div>" +
+                "<form class='questionsForm form-horizontal'>" +
+                "<div class='choices form-group'><ul class='choicesList text-center'></ul></div>" +
+                "<div class='buttons text-center form-group'>" +
+                "<button type='button' class='backBtn btn btn-default'>Back</button>" +
+                "<button type='submit' class='nextBtn btn btn-default'>Next</button>" +
+                "</div></form></div></main></div>";
+
+        div.innerHTML = html;
+        fragment.appendChild(div);
+
+        doc.getElementsByClassName("quizzes")[0].appendChild(fragment);
+    };
+
+    var addEventsToQuiz = function () {
+        var quizQuestionsForm = document.querySelectorAll(".questionsForm")[quizzes.length-1];
+
+        quizQuestionsForm.addEventListener("click", previousQuestionHandler, false);
+        quizQuestionsForm.addEventListener("submit", nextQuestionHandler, false);
     };
 
     return {
         startApplication: function () {
 
-            quiz.loadQuestions().done(function () {
+            if (DynamicQuiz.LogElements.Log.userAlreadyExists()) {
+                var username = DynamicQuiz.LogElements.Log.logExistingUser();
+                loadLogOutForm(username);
+            }
 
-                if (DynamicQuiz.LogElements.Log.userAlreadyExists()) {
-                    var username = DynamicQuiz.LogElements.Log.logExistingUser();
-                    loadLogOutForm(username);
-                }
+            DynamicQuiz.Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
 
-                quiz.nextQuestion();
+            DynamicQuiz.Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
 
-                DynamicQuiz.Constants.DOMLookups.QuestionsForm.addEventListener("click", previousQuestionHandler, false);
-                DynamicQuiz.Constants.DOMLookups.QuestionsForm.addEventListener("submit", nextQuestionHandler, false);
+            if (quizzes.length) {
+                currentQuiz.loadQuestions().done(function () {
 
-                DynamicQuiz.Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
-
-                DynamicQuiz.Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
-            });
+                    currentQuiz.nextQuestion();
+                });
+            }
         },
 
         addQuiz: function(quiz) {
 
             if (quiz !== null) {
                 quizzes.push(quiz);
+
+                if (quizzes.length === 1) {
+                    currentQuiz = quizzes[0];
+                }
             }
+
+            addQuizTab();
+            addQuizToHTML();
+            addEventsToQuiz();
         }
     };
 }();
 
-DynamicQuiz.App.startApplication();
+var quiz = new DynamicQuiz.QuizElements.Quiz(DynamicQuiz.Constants.JSON_FILE);
+DynamicQuiz.App.addQuiz(quiz);
 
+DynamicQuiz.App.startApplication();
 
