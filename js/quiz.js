@@ -61,12 +61,6 @@ DynamicQuiz.QuizElements.Score = function () {
     this.score = 0;
 };
 
-DynamicQuiz.QuizElements.Score.prototype.changeTitle = function () {
-    "use strict";
-    var title = document.getElementsByClassName("title")[0].firstChild;
-    title.text = "Score";
-};
-
 DynamicQuiz.QuizElements.Score.prototype.increaseScore = function () {
     "use strict";
     this.score++;
@@ -81,8 +75,6 @@ DynamicQuiz.QuizElements.Score.prototype.decreaseScore = function () {
 
 DynamicQuiz.QuizElements.Score.prototype.showScore = function () {
     "use strict";
-
-    this.changeTitle();
 
     var main = document.getElementsByClassName("questionnaire")[0],
         scoreMsg = DynamicQuiz.Constants.Messages.SCORE_MSG + " " + this.score,
