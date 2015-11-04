@@ -96,7 +96,6 @@ DynamicQuiz.QuizElements.Score.prototype.showScore = function () {
     main.innerHTML = html;
 };
 
-
 DynamicQuiz.QuizElements.Questionnaire = function () {
     "use strict";
     var fillChoices = function (choicesList, choices) {
@@ -117,7 +116,6 @@ DynamicQuiz.QuizElements.Questionnaire = function () {
     return {
         fillQuestionnaire: function (question, quizLocation) {
 
-
             fillQuestion(question.getQuestion(), quizLocation.questionDiv);
 
             fillChoices(quizLocation.choicesList, question.getChoices());
@@ -125,7 +123,7 @@ DynamicQuiz.QuizElements.Questionnaire = function () {
 
         setUserAnswer: function (answer, quizLocation) {
 
-            if (answer < quizLocation.questionDiv.elements.length) {
+            if (answer < quizLocation.choicesList.children.length) {
                 quizLocation.questionsForm.elements[answer].checked = true;
             }
         }
@@ -182,7 +180,7 @@ DynamicQuiz.QuizElements.Quiz.prototype.nextQuestion = function () {
     DynamicQuiz.QuizElements.Questionnaire.fillQuestionnaire(this.questions.next(), this.quizLocation);
 
     if (this.userPreviouslyAnswered()) {
-        DynamicQuiz.QuizElements.Questionnaire.setUserAnswer(this.getUserAnswer());
+        DynamicQuiz.QuizElements.Questionnaire.setUserAnswer(this.getUserAnswer(), this.quizLocation);
     }
 };
 
@@ -507,17 +505,11 @@ DynamicQuiz.App = function () {
             liElement.setAttribute("class", "active");
         }
 
-        window.alert(html);
-
         html +=  "<a href='#quiz" + quizNumber + "' " + "data-toggle='tab'>Quiz " + quizNumber + "</a></li>";
-
-        window.alert(html);
 
         liElement.innerHTML = html;
         fragment.appendChild(liElement);
         quizzesList.appendChild(fragment);
-
-        window.alert(quizzesList.innerHTML);
     };
 
     var setQuizLocation = function (quiz) {
