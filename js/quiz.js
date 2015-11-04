@@ -73,14 +73,14 @@ DynamicQuiz.QuizElements.Score.prototype.decreaseScore = function () {
     }
 };
 
-DynamicQuiz.QuizElements.Score.prototype.showScore = function () {
+DynamicQuiz.QuizElements.Score.prototype.showScore = function (quizLocation) {
     "use strict";
 
-    var main = document.getElementsByClassName("questionnaire")[0],
+    var main = quizLocation.questionnaire,
         scoreMsg = DynamicQuiz.Constants.Messages.SCORE_MSG + " " + this.score,
         html = "<h3 class='score'>" + scoreMsg + "</h3>";
 
-    var QuestionsForm = document.getElementsByClassName("questionsForm")[0];
+    var QuestionsForm = quizLocation.questionsForm;
 
     QuestionsForm.onsubmit = null;
     QuestionsForm.onclick = null;
@@ -206,7 +206,7 @@ DynamicQuiz.QuizElements.Quiz.prototype.goToNextQuestion = function () {
             QA.fadeTo("fast", 1);
         }
         else {
-            this.score.showScore();
+            this.score.showScore(this.quizLocation);
         }
     }
     else {
@@ -231,10 +231,11 @@ DynamicQuiz.QuizElements.Quiz.prototype.goToPreviousQuestion = function () {
     }
 };
 
-DynamicQuiz.QuizElements.Quiz.prototype.setLocation = function(questionsForm, questionDiv, choicesList) {
+DynamicQuiz.QuizElements.Quiz.prototype.setLocation = function(main, questionsForm, questionDiv, choicesList) {
     "use strict";
 
     var location = {
+        questionnaire: main,
         questionsForm: questionsForm,
         questionDiv: questionDiv,
         choicesList: choicesList
@@ -509,10 +510,10 @@ DynamicQuiz.App = function () {
         var doc = document,
             questionsForm = doc.querySelectorAll(".questionsForm")[quizzes.length-1],
             questionDiv = doc.querySelectorAll(".question")[quizzes.length-1],
-            choicesList = doc.querySelectorAll(".choicesList")[[quizzes.length-1]];
+            choicesList = doc.querySelectorAll(".choicesList")[[quizzes.length-1]],
+            questionnaire = doc.querySelectorAll(".questionnaire")[[quizzes.length-1]];
 
-        quiz.setLocation(questionsForm, questionDiv, choicesList);
-
+        quiz.setLocation(questionnaire, questionsForm, questionDiv, choicesList);
     };
 
 
