@@ -110,43 +110,34 @@ DynamicQuiz.QuizElements.Questionnaire = function () {
         choicesList.innerHTML = html;
     };
 
-    var fillQuestion = function (text) {
-
-        var html = "<label>" + text + "</label>";
-
-        var questionDiv = document.getElementsByClassName("question")[0];
-
-        questionDiv.innerHTML = html;
+    var fillQuestion = function (text, questionDiv) {
+        questionDiv.innerHTML = "<label>" + text + "</label>";
     };
 
     return {
-        fillQuestionnaire: function (question) {
-            fillQuestion(question.getQuestion());
+        fillQuestionnaire: function (question, quizLocation) {
 
-            var ChoicesList = document.getElementsByClassName("choicesList")[0];
 
-            fillChoices(ChoicesList, question.getChoices());
+            fillQuestion(question.getQuestion(), quizLocation.questionDiv);
+
+            fillChoices(quizLocation.choicesList, question.getChoices());
         },
 
-        setUserAnswer: function (answer) {
+        setUserAnswer: function (answer, quizLocation) {
 
-            var QuestionDiv = document.getElementsByClassName("question")[0];
-            var QuestionsForm = document.getElementsByClassName("questionsForm")[0];
-
-            if (answer < QuestionDiv.elements.length) {
-               QuestionsForm.elements[answer].checked = true;
+            if (answer < quizLocation.questionDiv.elements.length) {
+                quizLocation.questionsForm.elements[answer].checked = true;
             }
         }
     };
 }();
-
-
 
 DynamicQuiz.QuizElements.Quiz = function (jsonFile) {
     "use strict";
     this.questions = new DynamicQuiz.QuizElements.QuestionsAndAnswers(jsonFile);
     this.userAnswers = [];
     this.score = new DynamicQuiz.QuizElements.Score();
+    this.quizLocation = {};
 };
 
 
@@ -163,56 +154,6 @@ DynamicQuiz.QuizElements.Quiz.prototype.getChoiceChecked = function (form) {
         }
     }
     return -1;
-};
-
-DynamicQuiz.QuizElements.QuestionsAndAnswers = function(jsonFile) {
-    "use strict";
-    this.questions = [];
-    this.currentQuestion = -1;
-    this.jsonFile = jsonFile;
-};
-
-DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.loadQuestions = function () {
-    "use strict";
-    var that = this;
-    return $.getJSON(that.jsonFile, function (data) {
-        $.each(data, function (i) {
-            that.questions[that.questions.length] = new DynamicQuiz.QuizElements.Question(data[i]);
-        });
-    });
-};
-
-DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.next = function () {
-    "use strict";
-    this.currentQuestion++;
-    return this.questions[this.currentQuestion];
-};
-
-DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.previous = function () {
-    "use strict";
-    this.currentQuestion--;
-    return this.questions[this.currentQuestion];
-
-};
-
-DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.noMoreQuestions = function () {
-    "use strict";
-    return this.currentQuestion >= this.questions.length - 1;
-};
-
-DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.index = function () {
-    "use strict";
-    return this.currentQuestion;
-};
-
-DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.isFirstQuestion = function () {
-    "use strict";
-    return this.currentQuestion === 0;
-};
-
-DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.isCorrectChoice = function (choice) {
-    "use strict";
-    return this.questions[this.currentQuestion].isCorrectChoice(choice);
 };
 
 
@@ -300,11 +241,80 @@ DynamicQuiz.QuizElements.Quiz.prototype.goToPreviousQuestion = function () {
     }
 };
 
+DynamicQuiz.QuizElements.Quiz.prototype.setLocation = function(questionsForm, questionDiv, choicesList) {
+    "use strict";
+
+    var location = {
+        questionsForm: questionsForm,
+        questionDiv: questionDiv,
+        choicesList: choicesList
+    };
+
+    this.quizLocation = location;
+};
+
+DynamicQuiz.QuizElements.Quiz.prototype.noLocation = function () {
+    "use strict";
+    return this.quizLocation === null;
+}
+
 DynamicQuiz.QuizElements.Quiz.prototype.loadQuestions = function() {
     "use strict";
     return this.questions.loadQuestions();
 
 };
+
+DynamicQuiz.QuizElements.QuestionsAndAnswers = function(jsonFile) {
+    "use strict";
+    this.questions = [];
+    this.currentQuestion = -1;
+    this.jsonFile = jsonFile;
+};
+
+DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.loadQuestions = function () {
+    "use strict";
+    var that = this;
+    return $.getJSON(that.jsonFile, function (data) {
+        $.each(data, function (i) {
+            that.questions[that.questions.length] = new DynamicQuiz.QuizElements.Question(data[i]);
+        });
+    });
+};
+
+DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.next = function () {
+    "use strict";
+    this.currentQuestion++;
+    return this.questions[this.currentQuestion];
+};
+
+DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.previous = function () {
+    "use strict";
+    this.currentQuestion--;
+    return this.questions[this.currentQuestion];
+
+};
+
+DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.noMoreQuestions = function () {
+    "use strict";
+    return this.currentQuestion >= this.questions.length - 1;
+};
+
+DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.index = function () {
+    "use strict";
+    return this.currentQuestion;
+};
+
+DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.isFirstQuestion = function () {
+    "use strict";
+    return this.currentQuestion === 0;
+};
+
+DynamicQuiz.QuizElements.QuestionsAndAnswers.prototype.isCorrectChoice = function (choice) {
+    "use strict";
+    return this.questions[this.currentQuestion].isCorrectChoice(choice);
+};
+
+
 
 DynamicQuiz.LogElements.Log = function () {
     "use strict";
