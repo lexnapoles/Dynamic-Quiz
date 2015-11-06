@@ -184,9 +184,7 @@ DynamicQuiz.QuizElements.Quiz.prototype.previousQuestion = function () {
 DynamicQuiz.QuizElements.Quiz.prototype.goToNextQuestion = function () {
     "use strict";
 
-    var QuestionsForm = this.quizLocation.QuestionsForm;
-
-    var choiceChecked = this.getChoiceChecked(QuestionsForm);
+    var choiceChecked = this.getChoiceChecked(this.quizLocation.QuestionsForm);
 
     if (choiceChecked >= 0) {
 
@@ -498,7 +496,21 @@ DynamicQuiz.App = function () {
         quiz.setLocation(questionnaire, qaDiv, questionsForm, questionDiv, choicesList);
     };
 
-    var addQuizToHTML = function () {
+    var createQuizHTML = function () {
+
+        return  "<main class='questionnaire col-sm-8 col-md-8'>" +
+                "<div class='QA'>" +
+                "<div class='question'></div>" +
+                "<form class='questionsForm form-horizontal'>" +
+                "<div class='choices form-group'>" +
+                "<ul class='choicesList text-center'></ul></div>" +
+                "<div class='buttons text-center form-group'>" +
+                "<button type='button' class='backBtn btn btn-default'>Back</button>" +
+                "<button type='submit' class='nextBtn btn btn-default'>Next</button>" +
+                "</div></form></div></main></div>";
+    };
+
+    var addQuizToPage = function () {
 
         var doc = document,
             fragment = doc.createDocumentFragment(),
@@ -516,15 +528,7 @@ DynamicQuiz.App = function () {
             div.setAttribute("class", "quiz tab-pane fade");
         }
 
-        html += "<main class='questionnaire col-sm-8 col-md-8'>" +
-                "<div class='QA'>" +
-                "<div class='question'></div>" +
-                "<form class='questionsForm form-horizontal'>" +
-                "<div class='choices form-group'><ul class='choicesList text-center'></ul></div>" +
-                "<div class='buttons text-center form-group'>" +
-                "<button type='button' class='backBtn btn btn-default'>Back</button>" +
-                "<button type='submit' class='nextBtn btn btn-default'>Next</button>" +
-                "</div></form></div></main></div>";
+        html += createQuizHTML();
 
         div.innerHTML = html;
 
@@ -551,15 +555,6 @@ DynamicQuiz.App = function () {
         currentQuiz = quizzes[index];
     };
 
-    var addTabEvents = function () {
-
-        $('a[data-toggle="tab"]').on('hide.bs.tab', function (e) {
-
-            var quizId = $(e.relatedTarget).attr("href");
-
-            ChangeCurrentQuiz(quizId);
-        });
-    };
 
     var loadQuiz = function (quiz) {
         quiz.loadQuestions().done(function () {
@@ -599,19 +594,42 @@ DynamicQuiz.App = function () {
 
     };
 
+    var addLogEvents = function () {
+
+        DynamicQuiz.Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
+        DynamicQuiz.Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
+    };
+
+    var addTabEvents = function () {
+
+        $('a[data-toggle="tab"]').on('hide.bs.tab', function (e) {
+
+            var quizId = $(e.relatedTarget).attr("href");
+
+            ChangeCurrentQuiz(quizId);
+        });
+    };
+
+    var addEvents = function () {
+        addLogEvents();
+        addTabEvents();
+    };
+
+    var LogUserIfWasAlreadyLoggedBefore = function () {
+
+        if (DynamicQuiz.LogElements.Log.userAlreadyExists()) {
+
+            var username = DynamicQuiz.LogElements.Log.logExistingUser();
+            loadLogOutForm(username);
+        }
+    };
+
     return {
-        startApplication: function () {
+        startApplication: function  () {
 
-            if (DynamicQuiz.LogElements.Log.userAlreadyExists()) {
-                var username = DynamicQuiz.LogElements.Log.logExistingUser();
-                loadLogOutForm(username);
-            }
+            LogUserIfWasAlreadyLoggedBefore();
 
-            DynamicQuiz.Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
-
-            DynamicQuiz.Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
-
-            addTabEvents();
+            addEvents();
         },
 
         addQuiz: function(quiz) {
@@ -625,7 +643,7 @@ DynamicQuiz.App = function () {
             }
 
             addQuizTab();
-            addQuizToHTML();
+            addQuizToPage();
             setQuizLocation(quiz);
             addEventsToQuiz(quiz);
 
