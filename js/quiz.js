@@ -611,13 +611,19 @@ DynamicQuiz.App = function () {
         addTabEvents();
     };
 
+    var LogUserIfWasAlreadyLoggedBefore = function () {
+
+        if (DynamicQuiz.LogElements.Log.userAlreadyExists()) {
+
+            var username = DynamicQuiz.LogElements.Log.logExistingUser();
+            loadLogOutForm(username);
+        }
+    };
+
     return {
         startApplication: function  () {
 
-            if (DynamicQuiz.LogElements.Log.userAlreadyExists()) {
-                var username = DynamicQuiz.LogElements.Log.logExistingUser();
-                loadLogOutForm(username);
-            }
+            LogUserIfWasAlreadyLoggedBefore();
 
             addEvents();
         },
