@@ -1,0 +1,19 @@
+[
+	{
+		"question": "What is the capital of France?",
+		"choices": ["Barcelona", "Sevilla", "Madrid", "Coimbra","Paris"],
+		"correctAnswer": 2		
+	},
+	
+	{
+		"question": "How many sides has an pentagon?",
+		"choices": [2,7, 340, 6, 5],
+		"correctAnswer": 3
+	},
+	
+	{
+		"question": "What is the heaviest creature on some galaxy?",
+		"choices": ["Eagle","Lion", "You", "Doberman", "Unknown"],
+		"correctAnswer": 4
+	}
+]
