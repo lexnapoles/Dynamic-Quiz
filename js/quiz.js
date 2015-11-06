@@ -551,15 +551,6 @@ DynamicQuiz.App = function () {
         currentQuiz = quizzes[index];
     };
 
-    var addTabEvents = function () {
-
-        $('a[data-toggle="tab"]').on('hide.bs.tab', function (e) {
-
-            var quizId = $(e.relatedTarget).attr("href");
-
-            ChangeCurrentQuiz(quizId);
-        });
-    };
 
     var loadQuiz = function (quiz) {
         quiz.loadQuestions().done(function () {
@@ -599,19 +590,36 @@ DynamicQuiz.App = function () {
 
     };
 
+    var addLogEvents = function () {
+
+        DynamicQuiz.Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
+        DynamicQuiz.Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
+    };
+
+    var addTabEvents = function () {
+
+        $('a[data-toggle="tab"]').on('hide.bs.tab', function (e) {
+
+            var quizId = $(e.relatedTarget).attr("href");
+
+            ChangeCurrentQuiz(quizId);
+        });
+    };
+
+    var addEvents = function () {
+        addLogEvents();
+        addTabEvents();
+    };
+
     return {
-        startApplication: function () {
+        startApplication: function  () {
 
             if (DynamicQuiz.LogElements.Log.userAlreadyExists()) {
                 var username = DynamicQuiz.LogElements.Log.logExistingUser();
                 loadLogOutForm(username);
             }
 
-            DynamicQuiz.Constants.DOMLookups.LogInForm.addEventListener("submit", logInHandler, false);
-
-            DynamicQuiz.Constants.DOMLookups.LogOutForm.addEventListener("submit", logOutHandler, false);
-
-            addTabEvents();
+            addEvents();
         },
 
         addQuiz: function(quiz) {
