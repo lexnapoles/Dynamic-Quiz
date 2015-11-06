@@ -7,7 +7,6 @@ DynamicQuiz.App = {};
 DynamicQuiz.Constants = {
     SCORE_TITLE: "Score",
     USERNAME: "username",
-    JSON_FILE: "Q&A.json",
     Messages: {
         PICK_CHOICE_MSG: "To proceed further, please pick a choice",
         FIRST_QUESTION: "This is the first question",
@@ -635,11 +634,10 @@ DynamicQuiz.App = function () {
     };
 }();
 
-var quiz = new DynamicQuiz.QuizElements.Quiz(DynamicQuiz.Constants.JSON_FILE);
+var quiz = new DynamicQuiz.QuizElements.Quiz("Q&A.json");
 DynamicQuiz.App.addQuiz(quiz);
 
 var quiz2 = new DynamicQuiz.QuizElements.Quiz("Q&A2.json");
 DynamicQuiz.App.addQuiz(quiz2);
 
 DynamicQuiz.App.startApplication();
-
