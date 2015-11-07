@@ -468,6 +468,15 @@ DynamicQuiz.App = function () {
     var quizzes = [];
     var currentQuiz;
 
+    var setTabAttributes = function (liElement) {
+
+        liElement.setAttribute("role", "presentation");
+
+        if (quizzes.length === 1) {
+            liElement.setAttribute("class", "active");
+        }
+    };
+
     var createTabHTML = function () {
 
         var doc = document,
@@ -476,11 +485,7 @@ DynamicQuiz.App = function () {
             html = "",
             liElement = doc.createElement("LI");
 
-        liElement.setAttribute("role", "presentation");
-
-        if (quizzes.length === 1) {
-            liElement.setAttribute("class", "active");
-        }
+        setTabAttributes(liElement);
 
         html += "<a href='#quiz" + quizNumber + "' " + "data-toggle='tab'>Quiz " + quizNumber + "</a></li>";
 
@@ -494,9 +499,9 @@ DynamicQuiz.App = function () {
 
         var quizzesList = document.getElementsByClassName("quizzesList")[0];
 
-        var tabFragment = createTabHTML();
+        var tab = createTabHTML();
 
-        quizzesList.appendChild(tabFragment);
+        quizzesList.appendChild(tab);
     };
 
     var setQuizLocation = function (quiz) {
@@ -511,7 +516,7 @@ DynamicQuiz.App = function () {
         quiz.setLocation(questionnaire, qaDiv, questionsForm, questionDiv, choicesList);
     };
 
-    var createQuizHTML = function () {
+    var questionnaireHTML = function () {
 
         return  "<main class='questionnaire col-sm-8 col-md-8'>" +
                 "<div class='QA'>" +
@@ -525,13 +530,7 @@ DynamicQuiz.App = function () {
                 "</div></form></div></main></div>";
     };
 
-    var addQuizToPage = function () {
-
-        var doc = document,
-            fragment = doc.createDocumentFragment(),
-            div = doc.createElement("DIV"),
-            id = "quiz" + quizzes.length,
-            html = "";
+    var setQuizAttributes = function (div, id) {
 
         div.setAttribute("role", "tabpanel");
         div.setAttribute("id", id);
@@ -542,15 +541,31 @@ DynamicQuiz.App = function () {
         else {
             div.setAttribute("class", "quiz tab-pane fade");
         }
+    };
 
-        html += createQuizHTML();
+    var createQuizHTML = function () {
+
+        var doc = document,
+            fragment = doc.createDocumentFragment(),
+            div = doc.createElement("DIV"),
+            id = "quiz" + quizzes.length,
+            html = "";
+
+        setQuizAttributes(div, id);
+
+        html += questionnaireHTML();
 
         div.innerHTML = html;
 
         fragment.appendChild(div);
 
-        doc.getElementsByClassName("quizzes")[0].appendChild(fragment);
+        return fragment;
+    };
 
+    var addQuizToPage = function () {
+
+        var quiz = createQuizHTML();
+        document.getElementsByClassName("quizzes")[0].appendChild(quiz);
     };
 
     var addEventsToQuiz = function (quiz) {
