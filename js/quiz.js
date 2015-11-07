@@ -335,50 +335,46 @@ DynamicQuiz.LogElements.Log = function () {
     "use strict";
     var logged = false;
 
-    return {
-        logIn: function (username, password) {
+    var logIn = function (username, password) {
 
-            var user = localStorage.getItem(DynamicQuiz.Constants.USERNAME);
-            if (user === username) {
-                logged = true;
-            }
-            else {
-                localStorage.setItem(DynamicQuiz.Constants.USERNAME, username);
-                localStorage.setItem(username, password);
-
-                logged = true;
-            }
-        },
-
-        logOut: function () {
-            logged = false;
-            localStorage.clear();
-        },
-
-        isUserLoggedIn: function () {
-            return logged;
-        },
-
-        userAlreadyExists: function () {
-            return localStorage.length;
-        },
-
-        logExistingUser: function () {
+        var user = localStorage.getItem(DynamicQuiz.Constants.USERNAME);
+        if (user === username) {
             logged = true;
-            return localStorage.getItem(DynamicQuiz.Constants.USERNAME);
-        },
+        }
+        else {
+            localStorage.setItem(DynamicQuiz.Constants.USERNAME, username);
+            localStorage.setItem(username, password);
 
-        deleteUsers: function () {
-            localStorage.clear();
+            logged = true;
         }
     };
-}();
 
-DynamicQuiz.App = function () {
-    "use strict";
+    var logOut = function () {
+        logged = false;
+        localStorage.clear();
+    };
 
-    var quizzes = [];
-    var currentQuiz;
+    var isUserLoggedIn = function () {
+        return logged;
+    };
+
+    var userAlreadyExists = function () {
+        return localStorage.length;
+    };
+
+    var logExistingUser = function () {
+        logged = true;
+        return localStorage.getItem(DynamicQuiz.Constants.USERNAME);
+    };
+
+    var deleteUsers = function () {
+        localStorage.clear();
+    };
+
+    var noRememberIsChecked = function () {
+        var noRemember = DynamicQuiz.Constants.DOMLookups.LogInForm.elements[2];
+        return noRemember.checked;
+    };
 
     var getUsernameAndPassword = function () {
 
@@ -403,15 +399,6 @@ DynamicQuiz.App = function () {
         userMessageDiv.innerHTML = html;
     };
 
-    var loadLogOutForm = function (username) {
-
-        $(".logInForm").hide();
-
-        writeUserWelcomeMessage(username);
-
-        $(".logOutForm").show();
-    };
-
     var logInFormInputValuesToDefault = function () {
         DynamicQuiz.Constants.DOMLookups.LogInForm.elements[0].value = "";
         DynamicQuiz.Constants.DOMLookups.LogInForm.elements[1].value = "";
@@ -430,37 +417,56 @@ DynamicQuiz.App = function () {
         $(".logInForm").show();
     };
 
-    var noRememberIsChecked = function () {
-        var noRemember = DynamicQuiz.Constants.DOMLookups.LogInForm.elements[2];
-        return noRemember.checked;
+    var loadLogOutForm = function (username) {
+
+        $(".logInForm").hide();
+
+        writeUserWelcomeMessage(username);
+
+        $(".logOutForm").show();
     };
 
-    var logInUser = function () {
+    return {
 
-        if (!DynamicQuiz.LogElements.Log.isUserLoggedIn() && logInFormHasNoDefaultValues()) {
+        logUserIfWasAlreadyLoggedBefore: function () {
 
-                    var userInfo = getUsernameAndPassword();
-
-                    DynamicQuiz.LogElements.Log.logIn.apply(null, userInfo);
-                    var username = userInfo[0];
-
-                    if (noRememberIsChecked()) {
-                        window.addEventListener("unload", function () {
-                    DynamicQuiz.LogElements.Log.deleteUsers();
-                }, false);
+            if (userAlreadyExists()) {
+                var username = logExistingUser();
+                loadLogOutForm(username);
             }
+        },
 
-            loadLogOutForm(username);
+        logInUser: function () {
+
+            if (!isUserLoggedIn() && logInFormHasNoDefaultValues()) {
+
+                var userInfo = getUsernameAndPassword();
+
+                logIn.apply(null, userInfo);
+                var username = userInfo[0];
+
+                if (noRememberIsChecked()) {
+                    window.addEventListener("unload", function () { deleteUsers(); }, false);
+                }
+
+                loadLogOutForm(username);
+            }
+        },
+
+        logOutUser: function () {
+
+            logOut();
+
+            loadLogInForm();
         }
     };
+}();
 
-    var logOutUser = function () {
+DynamicQuiz.App = function () {
+    "use strict";
 
-        DynamicQuiz.LogElements.Log.logOut();
-
-        loadLogInForm();
-    };
-
+    var quizzes = [];
+    var currentQuiz;
 
     var addQuizTab = function() {
 
@@ -566,14 +572,14 @@ DynamicQuiz.App = function () {
 
         event.preventDefault();
 
-        logInUser();
+        DynamicQuiz.LogElements.Log.logInUser();
     };
 
     var logOutHandler = function (event) {
 
         event.preventDefault();
 
-        logOutUser();
+        DynamicQuiz.LogElements.Log.logOutUser();
     };
 
     var previousQuestionHandler = function (event) {
@@ -615,19 +621,10 @@ DynamicQuiz.App = function () {
         addTabEvents();
     };
 
-    var logUserIfWasAlreadyLoggedBefore = function () {
-
-        if (DynamicQuiz.LogElements.Log.userAlreadyExists()) {
-
-            var username = DynamicQuiz.LogElements.Log.logExistingUser();
-            loadLogOutForm(username);
-        }
-    };
-
     return {
         startApplication: function  () {
 
-            logUserIfWasAlreadyLoggedBefore();
+            DynamicQuiz.LogElements.Log.logUserIfWasAlreadyLoggedBefore();
 
             addEvents();
         },
