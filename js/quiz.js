@@ -335,50 +335,46 @@ DynamicQuiz.LogElements.Log = function () {
     "use strict";
     var logged = false;
 
-    return {
-        logIn: function (username, password) {
+    var logIn = function (username, password) {
 
-            var user = localStorage.getItem(DynamicQuiz.Constants.USERNAME);
-            if (user === username) {
-                logged = true;
-            }
-            else {
-                localStorage.setItem(DynamicQuiz.Constants.USERNAME, username);
-                localStorage.setItem(username, password);
-
-                logged = true;
-            }
-        },
-
-        logOut: function () {
-            logged = false;
-            localStorage.clear();
-        },
-
-        isUserLoggedIn: function () {
-            return logged;
-        },
-
-        userAlreadyExists: function () {
-            return localStorage.length;
-        },
-
-        logExistingUser: function () {
+        var user = localStorage.getItem(DynamicQuiz.Constants.USERNAME);
+        if (user === username) {
             logged = true;
-            return localStorage.getItem(DynamicQuiz.Constants.USERNAME);
-        },
+        }
+        else {
+            localStorage.setItem(DynamicQuiz.Constants.USERNAME, username);
+            localStorage.setItem(username, password);
 
-        deleteUsers: function () {
-            localStorage.clear();
+            logged = true;
         }
     };
-}();
 
-DynamicQuiz.App = function () {
-    "use strict";
+    var logOut = function () {
+        logged = false;
+        localStorage.clear();
+    };
 
-    var quizzes = [];
-    var currentQuiz;
+    var isUserLoggedIn = function () {
+        return logged;
+    };
+
+    var userAlreadyExists = function () {
+        return localStorage.length;
+    };
+
+    var logExistingUser = function () {
+        logged = true;
+        return localStorage.getItem(DynamicQuiz.Constants.USERNAME);
+    };
+
+    var deleteUsers = function () {
+        localStorage.clear();
+    };
+
+    var noRememberIsChecked = function () {
+        var noRemember = DynamicQuiz.Constants.DOMLookups.LogInForm.elements[2];
+        return noRemember.checked;
+    };
 
     var getUsernameAndPassword = function () {
 
@@ -403,15 +399,6 @@ DynamicQuiz.App = function () {
         userMessageDiv.innerHTML = html;
     };
 
-    var loadLogOutForm = function (username) {
-
-        $(".logInForm").hide();
-
-        writeUserWelcomeMessage(username);
-
-        $(".logOutForm").show();
-    };
-
     var logInFormInputValuesToDefault = function () {
         DynamicQuiz.Constants.DOMLookups.LogInForm.elements[0].value = "";
         DynamicQuiz.Constants.DOMLookups.LogInForm.elements[1].value = "";
@@ -430,58 +417,91 @@ DynamicQuiz.App = function () {
         $(".logInForm").show();
     };
 
-    var noRememberIsChecked = function () {
-        var noRemember = DynamicQuiz.Constants.DOMLookups.LogInForm.elements[2];
-        return noRemember.checked;
+    var loadLogOutForm = function (username) {
+
+        $(".logInForm").hide();
+
+        writeUserWelcomeMessage(username);
+
+        $(".logOutForm").show();
     };
 
-    var LogInUser = function () {
+    return {
 
-        if (!DynamicQuiz.LogElements.Log.isUserLoggedIn() && logInFormHasNoDefaultValues()) {
+        logUserIfWasAlreadyLoggedBefore: function () {
 
-                    var userInfo = getUsernameAndPassword();
-
-                    DynamicQuiz.LogElements.Log.logIn.apply(null, userInfo);
-                    var username = userInfo[0];
-
-                    if (noRememberIsChecked()) {
-                        window.addEventListener("unload", function () {
-                    DynamicQuiz.LogElements.Log.deleteUsers();
-                }, false);
+            if (userAlreadyExists()) {
+                var username = logExistingUser();
+                loadLogOutForm(username);
             }
+        },
 
-            loadLogOutForm(username);
+        logInUser: function () {
+
+            if (!isUserLoggedIn() && logInFormHasNoDefaultValues()) {
+
+                var userInfo = getUsernameAndPassword();
+
+                logIn.apply(null, userInfo);
+                var username = userInfo[0];
+
+                if (noRememberIsChecked()) {
+                    window.addEventListener("unload", function () { deleteUsers(); }, false);
+                }
+
+                loadLogOutForm(username);
+            }
+        },
+
+        logOutUser: function () {
+
+            logOut();
+
+            loadLogInForm();
         }
     };
+}();
 
-    var logOutUser = function () {
+DynamicQuiz.App = function () {
+    "use strict";
 
-        DynamicQuiz.LogElements.Log.logOut();
+    var quizzes = [];
+    var currentQuiz;
 
-        loadLogInForm();
-    };
-
-
-    var addQuizTab = function() {
-
-        var doc = document,
-            quizzesList = doc.getElementsByClassName("quizzesList")[0],
-            fragment = doc.createDocumentFragment(),
-            quizNumber =  quizzes.length,
-            html = "",
-            liElement = doc.createElement("LI");
+    var setTabAttributes = function (liElement) {
 
         liElement.setAttribute("role", "presentation");
 
         if (quizzes.length === 1) {
             liElement.setAttribute("class", "active");
         }
+    };
 
-        html +=  "<a href='#quiz" + quizNumber + "' " + "data-toggle='tab'>Quiz " + quizNumber + "</a></li>";
+    var createTabHTML = function () {
+
+        var doc = document,
+            fragment = doc.createDocumentFragment(),
+            quizNumber =  quizzes.length,
+            html = "",
+            liElement = doc.createElement("LI");
+
+        setTabAttributes(liElement);
+
+        html += "<a href='#quiz" + quizNumber + "' " + "data-toggle='tab'>Quiz " + quizNumber + "</a></li>";
 
         liElement.innerHTML = html;
         fragment.appendChild(liElement);
-        quizzesList.appendChild(fragment);
+
+        return fragment;
+    };
+
+    var addQuizTab = function() {
+
+        var quizzesList = document.getElementsByClassName("quizzesList")[0];
+
+        var tab = createTabHTML();
+
+        quizzesList.appendChild(tab);
     };
 
     var setQuizLocation = function (quiz) {
@@ -496,7 +516,7 @@ DynamicQuiz.App = function () {
         quiz.setLocation(questionnaire, qaDiv, questionsForm, questionDiv, choicesList);
     };
 
-    var createQuizHTML = function () {
+    var questionnaireHTML = function () {
 
         return  "<main class='questionnaire col-sm-8 col-md-8'>" +
                 "<div class='QA'>" +
@@ -510,13 +530,7 @@ DynamicQuiz.App = function () {
                 "</div></form></div></main></div>";
     };
 
-    var addQuizToPage = function () {
-
-        var doc = document,
-            fragment = doc.createDocumentFragment(),
-            div = doc.createElement("DIV"),
-            id = "quiz" + quizzes.length,
-            html = "";
+    var setQuizAttributes = function (div, id) {
 
         div.setAttribute("role", "tabpanel");
         div.setAttribute("id", id);
@@ -527,15 +541,31 @@ DynamicQuiz.App = function () {
         else {
             div.setAttribute("class", "quiz tab-pane fade");
         }
+    };
 
-        html += createQuizHTML();
+    var createQuizHTML = function () {
+
+        var doc = document,
+            fragment = doc.createDocumentFragment(),
+            div = doc.createElement("DIV"),
+            id = "quiz" + quizzes.length,
+            html = "";
+
+        setQuizAttributes(div, id);
+
+        html += questionnaireHTML();
 
         div.innerHTML = html;
 
         fragment.appendChild(div);
 
-        doc.getElementsByClassName("quizzes")[0].appendChild(fragment);
+        return fragment;
+    };
 
+    var addQuizToPage = function () {
+
+        var quiz = createQuizHTML();
+        document.getElementsByClassName("quizzes")[0].appendChild(quiz);
     };
 
     var addEventsToQuiz = function (quiz) {
@@ -550,7 +580,7 @@ DynamicQuiz.App = function () {
         return parseInt(quizId.slice(-1)) - 1;
     };
 
-    var ChangeCurrentQuiz = function (quizId) {
+    var changeCurrentQuiz = function (quizId) {
         var index = getIndexFromQuizId(quizId);
         currentQuiz = quizzes[index];
     };
@@ -566,14 +596,14 @@ DynamicQuiz.App = function () {
 
         event.preventDefault();
 
-        LogInUser();
+        DynamicQuiz.LogElements.Log.logInUser();
     };
 
     var logOutHandler = function (event) {
 
         event.preventDefault();
 
-        logOutUser();
+        DynamicQuiz.LogElements.Log.logOutUser();
     };
 
     var previousQuestionHandler = function (event) {
@@ -606,7 +636,7 @@ DynamicQuiz.App = function () {
 
             var quizId = $(e.relatedTarget).attr("href");
 
-            ChangeCurrentQuiz(quizId);
+            changeCurrentQuiz(quizId);
         });
     };
 
@@ -615,19 +645,10 @@ DynamicQuiz.App = function () {
         addTabEvents();
     };
 
-    var LogUserIfWasAlreadyLoggedBefore = function () {
-
-        if (DynamicQuiz.LogElements.Log.userAlreadyExists()) {
-
-            var username = DynamicQuiz.LogElements.Log.logExistingUser();
-            loadLogOutForm(username);
-        }
-    };
-
     return {
         startApplication: function  () {
 
-            LogUserIfWasAlreadyLoggedBefore();
+            DynamicQuiz.LogElements.Log.logUserIfWasAlreadyLoggedBefore();
 
             addEvents();
         },
