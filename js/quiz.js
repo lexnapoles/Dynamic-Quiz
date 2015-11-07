@@ -435,7 +435,7 @@ DynamicQuiz.App = function () {
         return noRemember.checked;
     };
 
-    var LogInUser = function () {
+    var logInUser = function () {
 
         if (!DynamicQuiz.LogElements.Log.isUserLoggedIn() && logInFormHasNoDefaultValues()) {
 
@@ -550,7 +550,7 @@ DynamicQuiz.App = function () {
         return parseInt(quizId.slice(-1)) - 1;
     };
 
-    var ChangeCurrentQuiz = function (quizId) {
+    var changeCurrentQuiz = function (quizId) {
         var index = getIndexFromQuizId(quizId);
         currentQuiz = quizzes[index];
     };
@@ -566,7 +566,7 @@ DynamicQuiz.App = function () {
 
         event.preventDefault();
 
-        LogInUser();
+        logInUser();
     };
 
     var logOutHandler = function (event) {
@@ -606,7 +606,7 @@ DynamicQuiz.App = function () {
 
             var quizId = $(e.relatedTarget).attr("href");
 
-            ChangeCurrentQuiz(quizId);
+            changeCurrentQuiz(quizId);
         });
     };
 
@@ -615,7 +615,7 @@ DynamicQuiz.App = function () {
         addTabEvents();
     };
 
-    var LogUserIfWasAlreadyLoggedBefore = function () {
+    var logUserIfWasAlreadyLoggedBefore = function () {
 
         if (DynamicQuiz.LogElements.Log.userAlreadyExists()) {
 
@@ -627,7 +627,7 @@ DynamicQuiz.App = function () {
     return {
         startApplication: function  () {
 
-            LogUserIfWasAlreadyLoggedBefore();
+            logUserIfWasAlreadyLoggedBefore();
 
             addEvents();
         },
