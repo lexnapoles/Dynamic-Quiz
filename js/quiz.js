@@ -468,10 +468,9 @@ DynamicQuiz.App = function () {
     var quizzes = [];
     var currentQuiz;
 
-    var addQuizTab = function() {
+    var createTabHTML = function () {
 
         var doc = document,
-            quizzesList = doc.getElementsByClassName("quizzesList")[0],
             fragment = doc.createDocumentFragment(),
             quizNumber =  quizzes.length,
             html = "",
@@ -483,11 +482,21 @@ DynamicQuiz.App = function () {
             liElement.setAttribute("class", "active");
         }
 
-        html +=  "<a href='#quiz" + quizNumber + "' " + "data-toggle='tab'>Quiz " + quizNumber + "</a></li>";
+        html += "<a href='#quiz" + quizNumber + "' " + "data-toggle='tab'>Quiz " + quizNumber + "</a></li>";
 
         liElement.innerHTML = html;
         fragment.appendChild(liElement);
-        quizzesList.appendChild(fragment);
+
+        return fragment;
+    };
+
+    var addQuizTab = function() {
+
+        var quizzesList = document.getElementsByClassName("quizzesList")[0];
+
+        var tabFragment = createTabHTML();
+
+        quizzesList.appendChild(tabFragment);
     };
 
     var setQuizLocation = function (quiz) {
