@@ -7,6 +7,7 @@ DynamicQuiz.App = {};
 DynamicQuiz.Constants = {
     SCORE_TITLE: "Score",
     USERNAME: "username",
+    TEMPLATES_DIRECTORY: "static/templates",
     Messages: {
         PICK_CHOICE_MSG: "To proceed further, please pick a choice",
         FIRST_QUESTION: "This is the first question",
@@ -473,7 +474,7 @@ DynamicQuiz.App = function () {
         var fragment = document.createDocumentFragment(),
             quizId = quizzes.length;
 
-        var compiledTabTemplate = Handlebars.getTemplate("tab", "static/templates");
+        var compiledTabTemplate = Handlebars.getTemplate("tab", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
 
         fragment = fragmentFromString(compiledTabTemplate(quizId));
 
@@ -507,7 +508,7 @@ DynamicQuiz.App = function () {
         var fragment = document.createDocumentFragment(),
             quizId = quizzes.length;
 
-        var compiledQuizTemplate = Handlebars.getTemplate("quiz", "static/templates");
+        var compiledQuizTemplate = Handlebars.getTemplate("quiz", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
 
         fragment = fragmentFromString(compiledQuizTemplate(quizId));
 
