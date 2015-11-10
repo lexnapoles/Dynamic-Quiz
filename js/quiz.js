@@ -76,7 +76,7 @@ DynamicQuiz.QuizElements.Score.prototype.decreaseScore = function () {
 DynamicQuiz.QuizElements.Score.prototype.showScore = function (quizLocation) {
     "use strict";
 
-    var main = quizLocation.Questionnaire,
+    var questionnaire = quizLocation.Questionnaire,
         scoreMsg = DynamicQuiz.Constants.Messages.SCORE_MSG + " " + this.score,
         html = "<h3 class='score'>" + scoreMsg + "</h3>";
 
@@ -85,7 +85,7 @@ DynamicQuiz.QuizElements.Score.prototype.showScore = function (quizLocation) {
     QuestionsForm.onsubmit = null;
     QuestionsForm.onclick = null;
 
-    main.innerHTML = html;
+    questionnaire.innerHTML = html;
 };
 
 DynamicQuiz.QuizElements.Questionnaire = function () {
@@ -471,21 +471,16 @@ DynamicQuiz.App = function () {
 
     var createTabHTML = function () {
 
-        var fragment = document.createDocumentFragment(),
-            quizId = quizzes.length;
+        var quizId = quizzes.length,
+            compiledTabTemplate = Handlebars.getTemplate("tab", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
 
-        var compiledTabTemplate = Handlebars.getTemplate("tab", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
-
-        fragment = fragmentFromString(compiledTabTemplate(quizId));
-
-        return fragment;
+        return fragmentFromString(compiledTabTemplate(quizId));
     };
 
     var addQuizTab = function() {
 
-        var quizzesList = document.getElementsByClassName("quizzesList")[0];
-
-        var tab = createTabHTML();
+        var quizzesList = document.getElementsByClassName("quizzesList")[0],
+            tab = createTabHTML();
 
         quizzesList.appendChild(tab);
     };
@@ -505,14 +500,10 @@ DynamicQuiz.App = function () {
 
     var createQuizHTML = function () {
 
-        var fragment = document.createDocumentFragment(),
-            quizId = quizzes.length;
+        var quizId = quizzes.length,
+            compiledQuizTemplate = Handlebars.getTemplate("quiz", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
 
-        var compiledQuizTemplate = Handlebars.getTemplate("quiz", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
-
-        fragment = fragmentFromString(compiledQuizTemplate(quizId));
-
-        return fragment;
+        return fragmentFromString(compiledQuizTemplate(quizId));
     };
 
     var addQuizToPage = function () {
