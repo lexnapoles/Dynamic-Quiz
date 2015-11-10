@@ -468,29 +468,14 @@ DynamicQuiz.App = function () {
     var quizzes = [];
     var currentQuiz;
 
-    var setTabAttributes = function (liElement) {
-
-        liElement.setAttribute("role", "presentation");
-
-        if (quizzes.length === 1) {
-            liElement.setAttribute("class", "active");
-        }
-    };
-
     var createTabHTML = function () {
 
-        var doc = document,
-            fragment = doc.createDocumentFragment(),
-            quizNumber =  quizzes.length,
-            html = "",
-            liElement = doc.createElement("LI");
+        var fragment = document.createDocumentFragment(),
+            quizId = quizzes.length;
 
-        setTabAttributes(liElement);
+        var compiledTabTemplate = Handlebars.getTemplate("tab", "static/templates");
 
-        html += "<a href='#quiz" + quizNumber + "' " + "data-toggle='tab'>Quiz " + quizNumber + "</a></li>";
-
-        liElement.innerHTML = html;
-        fragment.appendChild(liElement);
+        fragment = fragmentFromString(compiledTabTemplate(quizId));
 
         return fragment;
     };

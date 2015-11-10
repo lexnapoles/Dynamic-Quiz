@@ -15,9 +15,9 @@ Handlebars.getTemplate = function(name, folder) {
     return Handlebars.templates[name];
 };
 
-Handlebars.registerHelper("quizActiveIfFirstQuiz", function(quizNumber) {
+Handlebars.registerHelper("quizActiveIfFirstQuiz", function(id) {
     "use strict";
-    if (quizNumber === 1) {
+    if (id === 1) {
         return "in active";
     }
     return "";
