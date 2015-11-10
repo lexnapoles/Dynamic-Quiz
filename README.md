@@ -6,5 +6,7 @@ The application is a simple web with several quizzes, organized in tabs, and all
 
 Each quiz has radio button choices with questions pulled from a json file. The user can go back and forth between questions and change the choice picked, as well as know its score upon completion, independently for each tab.
 
-The quizzes can be added dynamically to the application given a json file.
+The quizzes can be added dynamically to the application given a json file. Each quiz and tab is created using a template (Handlebars.js).
+
+
 
