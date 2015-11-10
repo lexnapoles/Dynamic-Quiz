@@ -501,48 +501,15 @@ DynamicQuiz.App = function () {
         quiz.setLocation(questionnaire, qaDiv, questionsForm, questionDiv, choicesList);
     };
 
-    var questionnaireHTML = function () {
-
-        return  "<main class='questionnaire col-sm-8 col-md-8'>" +
-                "<div class='QA'>" +
-                "<div class='question'></div>" +
-                "<form class='questionsForm form-horizontal'>" +
-                "<div class='choices form-group'>" +
-                "<ul class='choicesList text-center'></ul></div>" +
-                "<div class='buttons text-center form-group'>" +
-                "<button type='button' class='backBtn btn btn-default'>Back</button>" +
-                "<button type='submit' class='nextBtn btn btn-default'>Next</button>" +
-                "</div></form></div></main></div>";
-    };
-
-    var setQuizAttributes = function (div, id) {
-
-        div.setAttribute("role", "tabpanel");
-        div.setAttribute("id", id);
-
-        if (quizzes.length === 1) {
-            div.setAttribute("class", "quiz tab-pane fade in active");
-        }
-        else {
-            div.setAttribute("class", "quiz tab-pane fade");
-        }
-    };
 
     var createQuizHTML = function () {
 
-        var doc = document,
-            fragment = doc.createDocumentFragment(),
-            div = doc.createElement("DIV"),
-            id = "quiz" + quizzes.length,
-            html = "";
+        var fragment = document.createDocumentFragment(),
+            quizId = quizzes.length;
 
-        setQuizAttributes(div, id);
+        var compiledQuizTemplate = Handlebars.getTemplate("quiz", "static/templates");
 
-        html += questionnaireHTML();
-
-        div.innerHTML = html;
-
-        fragment.appendChild(div);
+        fragment = fragmentFromString(compiledQuizTemplate(quizId));
 
         return fragment;
     };

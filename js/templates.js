@@ -23,9 +23,9 @@ Handlebars.registerHelper("quizActiveIfFirstQuiz", function(id) {
     return "";
 });
 
-Handlebars.registerHelper("tabActiveIfFirstQuiz", function(quizNumber) {
+Handlebars.registerHelper("tabActiveIfFirstQuiz", function(id) {
     "use strict";
-    if (quizNumber === 1) {
+    if (id === 1) {
         return "class='active'";
     }
     return "";
