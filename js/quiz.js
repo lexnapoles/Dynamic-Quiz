@@ -7,6 +7,7 @@ DynamicQuiz.App = {};
 DynamicQuiz.Constants = {
     SCORE_TITLE: "Score",
     USERNAME: "username",
+    TEMPLATES_DIRECTORY: "static/templates",
     Messages: {
         PICK_CHOICE_MSG: "To proceed further, please pick a choice",
         FIRST_QUESTION: "This is the first question",
@@ -75,7 +76,7 @@ DynamicQuiz.QuizElements.Score.prototype.decreaseScore = function () {
 DynamicQuiz.QuizElements.Score.prototype.showScore = function (quizLocation) {
     "use strict";
 
-    var main = quizLocation.Questionnaire,
+    var questionnaire = quizLocation.Questionnaire,
         scoreMsg = DynamicQuiz.Constants.Messages.SCORE_MSG + " " + this.score,
         html = "<h3 class='score'>" + scoreMsg + "</h3>";
 
@@ -84,7 +85,7 @@ DynamicQuiz.QuizElements.Score.prototype.showScore = function (quizLocation) {
     QuestionsForm.onsubmit = null;
     QuestionsForm.onclick = null;
 
-    main.innerHTML = html;
+    questionnaire.innerHTML = html;
 };
 
 DynamicQuiz.QuizElements.Questionnaire = function () {
@@ -468,38 +469,18 @@ DynamicQuiz.App = function () {
     var quizzes = [];
     var currentQuiz;
 
-    var setTabAttributes = function (liElement) {
-
-        liElement.setAttribute("role", "presentation");
-
-        if (quizzes.length === 1) {
-            liElement.setAttribute("class", "active");
-        }
-    };
-
     var createTabHTML = function () {
 
-        var doc = document,
-            fragment = doc.createDocumentFragment(),
-            quizNumber =  quizzes.length,
-            html = "",
-            liElement = doc.createElement("LI");
+        var quizId = quizzes.length,
+            compiledTabTemplate = Handlebars.getTemplate("tab", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
 
-        setTabAttributes(liElement);
-
-        html += "<a href='#quiz" + quizNumber + "' " + "data-toggle='tab'>Quiz " + quizNumber + "</a></li>";
-
-        liElement.innerHTML = html;
-        fragment.appendChild(liElement);
-
-        return fragment;
+        return fragmentFromString(compiledTabTemplate(quizId));
     };
 
     var addQuizTab = function() {
 
-        var quizzesList = document.getElementsByClassName("quizzesList")[0];
-
-        var tab = createTabHTML();
+        var quizzesList = document.getElementsByClassName("quizzesList")[0],
+            tab = createTabHTML();
 
         quizzesList.appendChild(tab);
     };
@@ -516,50 +497,13 @@ DynamicQuiz.App = function () {
         quiz.setLocation(questionnaire, qaDiv, questionsForm, questionDiv, choicesList);
     };
 
-    var questionnaireHTML = function () {
-
-        return  "<main class='questionnaire col-sm-8 col-md-8'>" +
-                "<div class='QA'>" +
-                "<div class='question'></div>" +
-                "<form class='questionsForm form-horizontal'>" +
-                "<div class='choices form-group'>" +
-                "<ul class='choicesList text-center'></ul></div>" +
-                "<div class='buttons text-center form-group'>" +
-                "<button type='button' class='backBtn btn btn-default'>Back</button>" +
-                "<button type='submit' class='nextBtn btn btn-default'>Next</button>" +
-                "</div></form></div></main></div>";
-    };
-
-    var setQuizAttributes = function (div, id) {
-
-        div.setAttribute("role", "tabpanel");
-        div.setAttribute("id", id);
-
-        if (quizzes.length === 1) {
-            div.setAttribute("class", "quiz tab-pane fade in active");
-        }
-        else {
-            div.setAttribute("class", "quiz tab-pane fade");
-        }
-    };
 
     var createQuizHTML = function () {
 
-        var doc = document,
-            fragment = doc.createDocumentFragment(),
-            div = doc.createElement("DIV"),
-            id = "quiz" + quizzes.length,
-            html = "";
+        var quizId = quizzes.length,
+            compiledQuizTemplate = Handlebars.getTemplate("quiz", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
 
-        setQuizAttributes(div, id);
-
-        html += questionnaireHTML();
-
-        div.innerHTML = html;
-
-        fragment.appendChild(div);
-
-        return fragment;
+        return fragmentFromString(compiledQuizTemplate(quizId));
     };
 
     var addQuizToPage = function () {
