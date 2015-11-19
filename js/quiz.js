@@ -96,13 +96,17 @@ DynamicQuiz.QuizElements.Score.prototype.showScore = function (quizLocation) {
 
 DynamicQuiz.QuizElements.Questionnaire = function () {
     "use strict";
+
+    var createChoicesHTML = function (choices) {
+
+        var compiledChoicesTemplate = Handlebars.getTemplate("choices", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
+
+        return compiledChoicesTemplate(choices);
+    };
+
     var fillChoices = function (choicesList, choices) {
 
-        var html = "";
-
-        for (var i = 0, len = choices.length; i < len; i++) {
-            html += "<li><input type='radio' name='choice'>" + choices[i] + "</li>";
-        }
+        var html = createChoicesHTML(choices);
 
         choicesList.innerHTML = html;
     };
