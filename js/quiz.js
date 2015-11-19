@@ -404,14 +404,19 @@ DynamicQuiz.LogElements.Log = function () {
         return info;
     };
 
+    var createUserMsgHTML = function (username) {
+        var userMsg = DynamicQuiz.Constants.Messages.HELLO_MSG + ", " + username,
+            compiledUserMsgTemplate = Handlebars.getTemplate("userWelcomeMsg", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
+
+        return compiledUserMsgTemplate(userMsg);
+    };
+
     var writeUserWelcomeMessage = function (username) {
 
-        var doc = document;
+        var doc = document,
+            userMessageDiv = doc.getElementsByClassName("userMessage")[0];
 
-        var html = "<p>" + DynamicQuiz.Constants.Messages.HELLO_MSG + ", " + username + "</p>";
-
-        var userMessageDiv = doc.getElementsByClassName("userMessage")[0];
-        userMessageDiv.innerHTML = html;
+        userMessageDiv.innerHTML = createUserMsgHTML(username);
     };
 
     var logInFormInputValuesToDefault = function () {
