@@ -104,15 +104,19 @@ DynamicQuiz.QuizElements.Questionnaire = function () {
         return compiledChoicesTemplate(choices);
     };
 
+    var createQuestionHTML = function (text) {
+
+        var compiledChoicesTemplate = Handlebars.getTemplate("question", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
+
+        return compiledChoicesTemplate(text);
+    };
+
     var fillChoices = function (choicesList, choices) {
-
-        var html = createChoicesHTML(choices);
-
-        choicesList.innerHTML = html;
+        choicesList.innerHTML = createChoicesHTML(choices);
     };
 
     var fillQuestion = function (text, questionDiv) {
-        questionDiv.innerHTML = "<label>" + text + "</label>";
+        questionDiv.innerHTML = createQuestionHTML(text);
     };
 
     return {
