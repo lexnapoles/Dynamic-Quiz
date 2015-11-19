@@ -4,3 +4,9 @@ function fragmentFromString(strHTML) {
     temp.innerHTML = strHTML;
     return temp.content;
 }
+
+var createHTMLFromTemplate = function (fileName, directory, args) {
+    "use strict";
+    var compiledTemplate = Handlebars.getTemplate(fileName, directory);
+    return compiledTemplate(args);
+};

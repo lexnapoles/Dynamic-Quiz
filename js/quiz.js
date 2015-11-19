@@ -75,10 +75,8 @@ DynamicQuiz.QuizElements.Score.prototype.decreaseScore = function () {
 
 DynamicQuiz.QuizElements.Score.prototype.createScoreMsgHTML = function () {
     "use strict";
-     var scoreMsg = DynamicQuiz.Constants.Messages.SCORE_MSG + " " + this.score,
-         compiledScoreMsgTemplate = Handlebars.getTemplate("scoreMsg", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
-
-    return compiledScoreMsgTemplate(scoreMsg);
+     var scoreMsg = DynamicQuiz.Constants.Messages.SCORE_MSG + " " + this.score;
+    return createHTMLFromTemplate("scoreMsg", DynamicQuiz.Constants.TEMPLATES_DIRECTORY, scoreMsg);
 }
 
 DynamicQuiz.QuizElements.Score.prototype.showScore = function (quizLocation) {
@@ -97,26 +95,12 @@ DynamicQuiz.QuizElements.Score.prototype.showScore = function (quizLocation) {
 DynamicQuiz.QuizElements.Questionnaire = function () {
     "use strict";
 
-    var createChoicesHTML = function (choices) {
-
-        var compiledChoicesTemplate = Handlebars.getTemplate("choices", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
-
-        return compiledChoicesTemplate(choices);
-    };
-
-    var createQuestionHTML = function (text) {
-
-        var compiledChoicesTemplate = Handlebars.getTemplate("question", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
-
-        return compiledChoicesTemplate(text);
-    };
-
     var fillChoices = function (choicesList, choices) {
-        choicesList.innerHTML = createChoicesHTML(choices);
+        choicesList.innerHTML = createHTMLFromTemplate("choices", DynamicQuiz.Constants.TEMPLATES_DIRECTORY, choices);
     };
 
     var fillQuestion = function (text, questionDiv) {
-        questionDiv.innerHTML = createQuestionHTML(text);
+        questionDiv.innerHTML = createHTMLFromTemplate("question", DynamicQuiz.Constants.TEMPLATES_DIRECTORY, text);;
     };
 
     return {
@@ -405,10 +389,8 @@ DynamicQuiz.LogElements.Log = function () {
     };
 
     var createUserMsgHTML = function (username) {
-        var userMsg = DynamicQuiz.Constants.Messages.HELLO_MSG + ", " + username,
-            compiledUserMsgTemplate = Handlebars.getTemplate("userWelcomeMsg", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
-
-        return compiledUserMsgTemplate(userMsg);
+        var userMsg = DynamicQuiz.Constants.Messages.HELLO_MSG + ", " + username;
+        return createHTMLFromTemplate("userWelcomeMsg", DynamicQuiz.Constants.TEMPLATES_DIRECTORY, userMsg);
     };
 
     var writeUserWelcomeMessage = function (username) {
@@ -489,11 +471,8 @@ DynamicQuiz.App = function () {
     var currentQuiz;
 
     var createTabHTML = function () {
-
-        var quizId = quizzes.length,
-            compiledTabTemplate = Handlebars.getTemplate("tab", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
-
-        return fragmentFromString(compiledTabTemplate(quizId));
+        var quizId = quizzes.length;
+        return fragmentFromString(createHTMLFromTemplate("tab", DynamicQuiz.Constants.TEMPLATES_DIRECTORY, quizId));
     };
 
     var addQuizTab = function() {
@@ -519,10 +498,8 @@ DynamicQuiz.App = function () {
 
     var createQuizHTML = function () {
 
-        var quizId = quizzes.length,
-            compiledQuizTemplate = Handlebars.getTemplate("quiz", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
-
-        return fragmentFromString(compiledQuizTemplate(quizId));
+        var quizId = quizzes.length;
+        return fragmentFromString(createHTMLFromTemplate("quiz", DynamicQuiz.Constants.TEMPLATES_DIRECTORY, quizId));
     };
 
     var addQuizToPage = function () {
