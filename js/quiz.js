@@ -73,19 +73,25 @@ DynamicQuiz.QuizElements.Score.prototype.decreaseScore = function () {
     }
 };
 
+DynamicQuiz.QuizElements.Score.prototype.createScoreMsgHTML = function () {
+    "use strict";
+     var scoreMsg = DynamicQuiz.Constants.Messages.SCORE_MSG + " " + this.score,
+         compiledScoreMsgTemplate = Handlebars.getTemplate("scoreMsg", DynamicQuiz.Constants.TEMPLATES_DIRECTORY);
+
+    return compiledScoreMsgTemplate(scoreMsg);
+}
+
 DynamicQuiz.QuizElements.Score.prototype.showScore = function (quizLocation) {
     "use strict";
 
     var questionnaire = quizLocation.Questionnaire,
-        scoreMsg = DynamicQuiz.Constants.Messages.SCORE_MSG + " " + this.score,
-        html = "<h3 class='score'>" + scoreMsg + "</h3>";
+        QuestionsForm = quizLocation.QuestionsForm;
 
-    var QuestionsForm = quizLocation.QuestionsForm;
 
     QuestionsForm.onsubmit = null;
     QuestionsForm.onclick = null;
 
-    questionnaire.innerHTML = html;
+    questionnaire.innerHTML = this.createScoreMsgHTML();
 };
 
 DynamicQuiz.QuizElements.Questionnaire = function () {
